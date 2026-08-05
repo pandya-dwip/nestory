@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches NestoryColors.void_ (#050505) — the app's default dark
+         background, so the native launch screen never flashes white
+         before Flutter's first frame draws. -->
+    <color name="launch_background">#FF050505</color>
+</resources>

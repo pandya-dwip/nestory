@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
-import 'data/repositories/memory_repository.dart';
-import 'features/home/home_screen.dart';
+import 'features/splash/splash_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await MemoryRepository.instance.init();
   runApp(const NestoryApp());
 }
 
@@ -24,7 +22,7 @@ class NestoryApp extends StatelessWidget {
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
         themeMode: mode,
-        home: const HomeScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

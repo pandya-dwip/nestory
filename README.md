@@ -1,4 +1,4 @@
-# Nestory 🖤📸
+# Nestory
 
 A premium, offline-first personal memory vault for Android, built with
 Flutter, Material 3, and a local SQLite database (Drift). Every day gets one
@@ -16,50 +16,50 @@ glass surfaces, and a restrained black-and-white palette.
 ![SQLite](https://img.shields.io/badge/SQLite-Drift-003B57?logo=sqlite&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)
 
-## ✨ Key Features & Highlights
+## Key Features & Highlights
 
-### 🗓️ 1. Calendar-First Memory Browsing
+### 1. Calendar-First Memory Browsing
 - Every month is its own page in a vertical scroll, with independent month
   and year pickers in the header.
 - Any day with a memory shows its cover photo directly on the date circle.
 - Tap a date to open a glass bottom sheet with that day's memories, then
   drill into a full memory card and details screen.
 
-### 📸 2. Rich Memory Entries
+### 2. Rich Memory Entries
 - Title, description, multiple photos, tags, and a favorite flag per memory.
 - Per-photo display modes — **Fill**, **Fit**, **Landscape priority**, or
   **Portrait priority** — chosen individually for each photo in an entry.
 
-### 🗄️ 3. Fully Offline Local Database
+### 3. Fully Offline Local Database
 - A normalized SQLite schema via [Drift](https://drift.simonbinder.eu):
   `Memories`, `MemoryPhotos`, `Tags`, `MemoryTags`, `Profile`, and
   `AppSettings`, with foreign keys, cascading deletes, indexes, and versioned
   migrations.
 - Everything — records and photos alike — lives on-device.
 
-### 🔍 4. Search
+### 4. Search
 - Find memories instantly by title, description, or tag.
 
-### 👤 5. Profile
+### 5. Profile
 - Editable name, bio, and profile photo, permanently copied into app storage
   so it survives restarts.
 - At-a-glance stats: total memories, photos, tags, and first-memory year.
 
-### 💾 6. Backup & Restore
+### 6. Backup & Restore
 - Export the entire vault — database and photos — into a single archive.
 - Restore from a previous backup archive at any time.
 
-### ⚙️ 7. Settings
+### 7. Settings
 - Theme control, on-device storage usage breakdown, demo data seeding
   (with real bundled sample photos) for trying the app risk-free, "delete
   all memories" (keeps your profile and settings), and About / Privacy
   Policy screens.
 
-### 🔒 8. Privacy by Design
+### 8. Privacy by Design
 - No accounts, no backend, no analytics, no network calls. The vault never
   leaves your device unless you explicitly export it.
 
-## 🛠️ Architecture & Tech Stack
+## Architecture & Tech Stack
 
 The project separates theme tokens, shared UI, data/persistence, and
 features into distinct layers:
@@ -96,7 +96,7 @@ lib/
 | `path_provider` / `path` | On-device file and directory management |
 | `cupertino_icons` | iOS-style icon set |
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Flutter SDK 3.44 or higher (Dart 3.12+, bundled with Flutter)
@@ -123,7 +123,7 @@ code with:
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-## 🧪 Testing & Analysis
+## Testing & Analysis
 
 ```bash
 flutter test
@@ -132,4 +132,4 @@ flutter analyze
 
 ---
 
-⭐ If you find this project interesting, consider giving it a star on GitHub!
+If you find this project interesting, consider giving it a star on GitHub!

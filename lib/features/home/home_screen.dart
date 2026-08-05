@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.vertical,
               controller: _monthController,
               itemCount: _totalMonths,
-              physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+              physics: const _SmoothPageScrollPhysics(parent: BouncingScrollPhysics()),
               itemBuilder: (context, index) {
                 final month = _monthAt(index);
                 return _RollingPage(
@@ -173,6 +173,26 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 String _formatDayTitle(DateTime date) => '${monthNames[date.month - 1]} ${date.day}';
+
+/// A softer, non-oscillating spring than [PageScrollPhysics]'s default —
+/// lower stiffness glides into the snap point instead of snapping briskly,
+/// and a slightly over-critical damping ratio keeps it from overshooting
+/// and bouncing back, so the settle reads as smooth rather than springy.
+class _SmoothPageScrollPhysics extends PageScrollPhysics {
+  const _SmoothPageScrollPhysics({super.parent});
+
+  @override
+  _SmoothPageScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return _SmoothPageScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  SpringDescription get spring => SpringDescription.withDampingRatio(
+        mass: 0.5,
+        stiffness: 60,
+        ratio: 1.05,
+      );
+}
 
 /// Subtle wheel-roll tilt as a page scrolls past — a small `rotateX` that's
 /// exactly zero when a page is centered (so it's invisible at rest) and
