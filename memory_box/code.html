@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Memory Box - Memory Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#444748",
+                        "on-surface-variant": "#c4c7c8",
+                        "tertiary-fixed": "#e4e1e5",
+                        "on-primary-fixed": "#1a1c1c",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#3a3939",
+                        "on-tertiary-fixed": "#1b1b1e",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-tertiary-fixed-variant": "#47464a",
+                        "primary-fixed-dim": "#c6c6c7",
+                        "on-tertiary-container": "#656467",
+                        "tertiary-fixed-dim": "#c8c6c9",
+                        "primary-container": "#e2e2e2",
+                        "on-background": "#e5e2e1",
+                        "secondary": "#c6c6cf",
+                        "surface-variant": "#353534",
+                        "on-primary-fixed-variant": "#454747",
+                        "on-secondary-container": "#b4b4bd",
+                        "on-secondary": "#2f3037",
+                        "surface-container": "#201f1f",
+                        "on-primary-container": "#636565",
+                        "tertiary-container": "#e4e1e5",
+                        "surface-dim": "#131313",
+                        "secondary-fixed": "#e2e1eb",
+                        "tertiary": "#ffffff",
+                        "on-tertiary": "#303033",
+                        "surface-tint": "#c6c6c7",
+                        "surface-container-highest": "#353534",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e5e2e1",
+                        "on-surface": "#e5e2e1",
+                        "secondary-container": "#45464e",
+                        "inverse-on-surface": "#313030",
+                        "on-secondary-fixed": "#1a1b22",
+                        "surface-container-low": "#1c1b1b",
+                        "primary": "#ffffff",
+                        "outline": "#8e9192",
+                        "surface-container-high": "#2a2a2a",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#e2e2e2",
+                        "on-primary": "#2f3131",
+                        "on-secondary-fixed-variant": "#45464e",
+                        "inverse-primary": "#5d5f5f",
+                        "secondary-fixed-dim": "#c6c6cf",
+                        "background": "#131313",
+                        "surface": "#131313",
+                        "void": "#050505"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px",
+                        "carousel": "24px"
+                    },
+                    "spacing": {
+                        "stack-lg": "48px",
+                        "stack-sm": "12px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "stack-md": "24px",
+                        "container-padding": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Manrope"],
+                        "label-sm": ["Geist"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "display-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "300" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "300" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "200" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+            background-image: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.03) 0%, transparent 60%);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Carousel Peek-a-boo layout */
+        .carousel-container {
+            scroll-snap-type: x mandatory;
+            scroll-padding: 0 10%;
+        }
+        .carousel-slide {
+            scroll-snap-align: center;
+            width: 80%;
+            margin-right: 4%;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            opacity: 0.5;
+            transform: scale(0.9);
+        }
+        .carousel-slide:first-child {
+            margin-left: 10%;
+        }
+        .carousel-slide:last-child {
+            margin-right: 10%;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="text-primary font-body-md min-h-screen relative overflow-x-hidden pb-32 md:pb-40">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky backdrop-blur-xl bg-surface/40 border-b border-white/10 z-40">
+<div class="flex items-center justify-between px-gutter h-20 w-full">
+<button aria-label="Back" class="text-primary hover:opacity-70 transition-opacity active:scale-95 duration-300 w-12 h-12 flex items-center justify-center -ml-2">
+<span class="material-symbols-outlined" data-icon="arrow_back" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-light tracking-[0.2em] text-primary">MEMORY BOX</h1>
+<button aria-label="More options" class="text-on-surface-variant hover:opacity-70 transition-opacity active:scale-95 duration-300 w-12 h-12 flex items-center justify-center -mr-2">
+<span class="material-symbols-outlined" data-icon="more_vert" style="font-variation-settings: 'FILL' 0;">more_vert</span>
+</button>
+</div>
+</header>
+<main class="md:px-container-padding max-w-7xl mx-auto">
+<!-- Image Gallery Carousel -->
+<section class="mt-stack-md relative">
+<div class="w-full h-[55vh] md:h-[65vh] relative overflow-hidden group">
+<div class="flex overflow-x-auto carousel-container hide-scrollbar h-full w-full py-4">
+<div class="carousel-slide h-full relative shrink-0 rounded-carousel overflow-hidden bg-white/5 border border-white/10 backdrop-blur-[30px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.15)] active">
+<img alt="Manali Sunset" class="absolute inset-0 w-full h-full object-cover rounded-carousel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAauksapCZSw67J9N79TQ0Qv7C_c7RrnVICMo5kk3W7wnQkEbK7bgiDryiJTWjCmFuVAJvV4TNqre7E-hglogObK15EffIO5lmVHns1ZSHmKWsqwLRcTRxmT0e-GpeLz0ksN7FyhRpxHgU9bp2hjc8m5PjOCwrj1Ng6i2Q8c3ut5x6wvyQmrbhi4ysgeo-Af-uU-3TlT5KBjvy-Z4J-2IZ3RQL_riFMugc4q6TGClsN0YHCR6u1UIuD0A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-carousel"></div>
+<div class="absolute inset-0 border-t border-white/20 rounded-carousel pointer-events-none z-10"></div>
+</div>
+<div class="carousel-slide h-full relative shrink-0 rounded-carousel overflow-hidden bg-white/5 border border-white/10 backdrop-blur-[30px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.15)]">
+<img alt="Manali Mountains" class="absolute inset-0 w-full h-full object-cover rounded-carousel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmUmbjpj3RTOm1EcmD9DiM1Zjw1KW_VQjf6UTBLNnmTNS-l7ZGh4zUAiCf8acB3H71TmcjgCJ01tS-dls2BRVThBnJy9OhPp_n91bQl0oCGMjtHda7pYzTVo_W2XyPHpwnCpSn5HVNjndvvLl1DbbJZlntv3xLdmLc5Pc9ClVfepf2PMtJwd2ZBKqF_tob2YylLqF0HXvhxvbiqmb1ziO3nuFveR1DV9JbcycU0g8INTKf7x6FlQqROQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-carousel"></div>
+<div class="absolute inset-0 border-t border-white/20 rounded-carousel pointer-events-none z-10"></div>
+</div>
+<div class="carousel-slide h-full relative shrink-0 rounded-carousel overflow-hidden bg-white/5 border border-white/10 backdrop-blur-[30px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.15)]">
+<img alt="Manali Friends" class="absolute inset-0 w-full h-full object-cover rounded-carousel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSZ4vS0DD8bhWWppsOnyeFC0x92JtwE1pGjNehnUIM7JyCdgcePJ76YsTKauOHNd61p8V2Kej-wfbjfj6B0KgHwTx3g01jfR3BfNVMS0dVNg6NxwQYeeYCMW5Eph-NaDfcm66u5T-i_X8b5RGa_pZRZsa7STVGGRMse05Bkv_ksooH6k3p2yhFXipjMlNiHUF6dNv0ycNs7qgCmXeVeTBwn104xJmvOkxO_7bpElHMRRsDAdSLfwcXow"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-carousel"></div>
+<div class="absolute inset-0 border-t border-white/20 rounded-carousel pointer-events-none z-10"></div>
+</div>
+</div>
+<!-- Swipe Indicators -->
+<div class="absolute bottom-6 left-0 right-0 flex justify-center gap-3 z-20"><div class="w-2 h-2 rounded-full bg-white transition-colors duration-300"></div><div class="w-2 h-2 rounded-full bg-white/30 transition-colors duration-300"></div><div class="w-2 h-2 rounded-full bg-white/30 transition-colors duration-300"></div></div>
+</div>
+</section>
+<!-- Content Section -->
+<section class="mt-stack-lg px-gutter md:px-container-padding max-w-3xl mx-auto">
+<div class="mb-stack-md">
+<h2 class="font-display-lg text-headline-lg text-primary tracking-tight mb-2">Weekend in Manali</h2>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-widest">24 July 2026</p>
+</div>
+<div class="mb-stack-md">
+<p class="text-label-sm text-outline uppercase tracking-widest mb-4">Description</p>
+<p class="text-body-md text-on-surface-variant leading-relaxed">A refreshing weekend getaway with friends. Cold breeze, beautiful mountains and endless memories.</p>
+</div>
+<p class="text-label-sm text-outline uppercase tracking-widest mb-4">Tags</p>
+<div class="flex flex-wrap gap-3"><span class="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-label-sm text-primary uppercase tracking-wider">Travel</span><span class="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-label-sm text-primary uppercase tracking-wider">Friends</span><span class="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-label-sm text-primary uppercase tracking-wider">Mountains</span><span class="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-label-sm text-primary uppercase tracking-wider">Adventure</span></div>
+</section>
+</main>
+<!-- Floating Action Bar -->
+<div class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex justify-center items-center py-4 px-8 rounded-full bg-surface-container-low/60 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)] shadow-2xl gap-8"><button class="text-on-surface-variant hover:text-primary transition-colors w-10 h-10 flex items-center justify-center"><span class="material-symbols-outlined">favorite</span></button><button class="text-on-surface-variant hover:text-primary transition-colors w-10 h-10 flex items-center justify-center"><span class="material-symbols-outlined">edit</span></button><button class="text-on-surface-variant hover:text-error transition-colors w-10 h-10 flex items-center justify-center"><span class="material-symbols-outlined">delete</span></button></div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const carousel = document.querySelector('.carousel-container');
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.bottom-6 .rounded-full');
+
+            if(carousel && slides.length > 0 && dots.length > 0) {
+                
+                // Intersection Observer for active slide state
+                const observerOptions = {
+                    root: carousel,
+                    rootMargin: '0px',
+                    threshold: 0.5 // Trigger when 50% of the slide is visible
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // Find index of intersecting slide
+                            const index = Array.from(slides).indexOf(entry.target);
+                            
+                            // Update classes
+                            slides.forEach((slide, i) => {
+                                if (i === index) {
+                                    slide.classList.add('active');
+                                } else {
+                                    slide.classList.remove('active');
+                                }
+                            });
+
+                            // Update dots
+                            dots.forEach((dot, i) => {
+                                if(i === index) {
+                                    dot.classList.remove('bg-white/30');
+                                    dot.classList.add('bg-white');
+                                } else {
+                                    dot.classList.remove('bg-white');
+                                    dot.classList.add('bg-white/30');
+                                }
+                            });
+                        }
+                    });
+                }, observerOptions);
+
+                slides.forEach(slide => observer.observe(slide));
+            }
+        });
+    </script>
+</body></html>

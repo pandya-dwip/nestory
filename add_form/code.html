@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Memory Box - Create Memory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&amp;family=Manrope:wght@200;300;400;500;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#3a3939",
+                        "on-primary": "#2f3131",
+                        "on-tertiary": "#303033",
+                        "on-tertiary-fixed": "#1b1b1e",
+                        "inverse-on-surface": "#313030",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "secondary-container": "#45464e",
+                        "on-background": "#e5e2e1",
+                        "primary-fixed": "#e2e2e2",
+                        "secondary-fixed": "#e2e1eb",
+                        "on-tertiary-container": "#656467",
+                        "on-secondary-fixed": "#1a1b22",
+                        "on-secondary-container": "#b4b4bd",
+                        "primary-fixed-dim": "#c6c6c7",
+                        "on-tertiary-fixed-variant": "#47464a",
+                        "inverse-primary": "#5d5f5f",
+                        "tertiary-fixed-dim": "#c8c6c9",
+                        "surface-dim": "#131313",
+                        "surface-container-highest": "#353534",
+                        "primary": "#ffffff",
+                        "surface": "#131313",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-fixed-variant": "#45464e",
+                        "on-secondary": "#2f3037",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#e5e2e1",
+                        "on-surface-variant": "#c4c7c8",
+                        "on-primary-fixed": "#1a1c1c",
+                        "on-primary-container": "#636565",
+                        "secondary-fixed-dim": "#c6c6cf",
+                        "primary-container": "#e2e2e2",
+                        "secondary": "#c6c6cf",
+                        "outline-variant": "#444748",
+                        "outline": "#8e9192",
+                        "on-surface": "#e5e2e1",
+                        "background": "#131313",
+                        "surface-container-high": "#2a2a2a",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#c6c6c7",
+                        "tertiary-fixed": "#e4e1e5",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#454747",
+                        "tertiary-container": "#e4e1e5",
+                        "tertiary": "#ffffff",
+                        "surface-variant": "#353534"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "stack-sm": "12px",
+                        "unit": "8px",
+                        "stack-lg": "48px",
+                        "gutter": "24px",
+                        "container-padding": "40px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Geist"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "display-lg": ["Manrope"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "300" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "300" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "200" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+        }
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-panel-active {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        /* Custom Input Trough */
+        .glass-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0;
+            color: #ffffff;
+            transition: border-color 0.3s ease;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+            box-shadow: none;
+        }
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Subtle Glow Animation for Upload Area */
+        @keyframes subtleGlow {
+            0% { box-shadow: 0 0 20px rgba(255,255,255,0.02) inset; }
+            50% { box-shadow: 0 0 30px rgba(255,255,255,0.05) inset; }
+            100% { box-shadow: 0 0 20px rgba(255,255,255,0.02) inset; }
+        }
+        .upload-area:hover {
+            animation: subtleGlow 3s infinite alternate;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface min-h-screen flex flex-col font-body-md antialiased selection:bg-white/20 selection:text-white">
+<!-- Ambient Shadow Overlay (Simulating deep space) -->
+<div class="fixed inset-0 pointer-events-none" style="background: radial-gradient(circle at 50% -20%, rgba(255,255,255,0.03) 0%, transparent 70%);"></div>
+<!-- Top App Bar -->
+<header class="flex items-center justify-between px-gutter h-20 w-full z-50 sticky top-0 backdrop-blur-xl bg-transparent border-b border-white/5 transition-transform duration-300">
+<button aria-label="Back" class="w-12 h-12 flex items-center justify-center text-primary hover:opacity-70 transition-opacity rounded-full glass-panel">
+<span class="material-symbols-outlined font-light" style="font-variation-settings: 'wght' 200;">arrow_back</span>
+</button>
+<!-- Empty center for "No page title" requirement -->
+<div class="flex-1"></div>
+<button aria-label="Save" class="px-6 h-12 flex items-center justify-center gap-2 text-surface bg-primary hover:scale-[1.02] transition-all duration-300 rounded-full">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-surface">Save</span>
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col w-full max-w-3xl mx-auto px-gutter pb-32">
+<!-- Photo Section (Hero) -->
+<section class="w-full mt-stack-md relative z-10 flex flex-col items-center">
+<!-- Upload Area -->
+<button class="upload-area glass-panel w-full h-[397px] min-h-[300px] rounded-xl flex flex-col items-center justify-center gap-4 transition-all duration-500 group relative overflow-hidden">
+<!-- Inner hover effect -->
+<div class="absolute inset-0 bg-white/0 group-hover:bg-white/[0.02] transition-colors duration-300"></div>
+<span class="material-symbols-outlined text-[64px] text-white/40 group-hover:text-white/60 transition-colors" style="font-variation-settings: 'wght' 100;">add_photo_alternate</span>
+<div class="text-center space-y-1">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-wide">Add Photos</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest opacity-60">Maximum 5 photos</p>
+</div>
+<!-- Hidden Input (semantic only for design) -->
+<input accept="image/*" class="hidden" multiple="" type="file"/>
+</button>
+<!-- Contextual Actions (Camera / Gallery) - Overlayed or just below -->
+<div class="flex gap-4 mt-6">
+<button class="glass-panel px-6 py-3 rounded-full flex items-center gap-3 hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-[18px] text-white/70">photo_camera</span>
+<span class="font-label-sm text-label-sm text-white/90">Camera</span>
+</button>
+<button class="glass-panel px-6 py-3 rounded-full flex items-center gap-3 hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-[18px] text-white/70">photo_library</span>
+<span class="font-label-sm text-label-sm text-white/90">Gallery</span>
+</button>
+</div>
+<!-- Indicator (Implied selection state) -->
+<div class="mt-8 flex items-center justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-[0.2em]">0 / 5</span>
+</div>
+</section>
+<!-- Memory Details Section -->
+<section class="w-full mt-stack-lg space-y-stack-lg relative z-10">
+<!-- Title Field -->
+<div class="relative pt-6">
+<label class="absolute top-0 left-0 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest pointer-events-none">Title</label>
+<input class="w-full glass-input py-4 font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg bg-transparent placeholder-white/20 focus:placeholder-transparent transition-all" placeholder="My Favorite Day" type="text"/>
+</div>
+<!-- Description Field -->
+<div class="relative pt-6">
+<label class="absolute top-0 left-0 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest pointer-events-none">Description</label>
+<textarea class="w-full glass-input py-4 min-h-[100px] resize-none overflow-hidden font-body-md text-on-surface bg-transparent placeholder-white/20 focus:placeholder-transparent transition-all" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" placeholder="What made this day special?" rows="1"></textarea>
+</div>
+<!-- Date Selector -->
+<div class="relative pt-6">
+<label class="absolute top-0 left-0 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest pointer-events-none">Date</label>
+<button class="w-full glass-panel-active rounded-lg px-6 py-5 flex items-center justify-between text-left group hover:bg-white/[0.08] transition-colors mt-2">
+<span class="font-body-md text-primary">October 24, 2023</span>
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors">calendar_today</span>
+</button>
+</div>
+<!-- Tags Section -->
+<div class="relative pt-6">
+<label class="absolute top-0 left-0 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest pointer-events-none">Tags</label>
+<div class="glass-panel rounded-lg p-6 mt-2 min-h-[100px] flex flex-wrap gap-3 items-start">
+<!-- Example Chip 1 -->
+<div class="glass-panel-active rounded-full px-4 py-2 flex items-center gap-2 group cursor-pointer hover:bg-white/10 transition-colors">
+<span class="font-label-sm text-label-sm text-primary tracking-wider">Travel</span>
+<span class="material-symbols-outlined text-[14px] text-white/40 hover:text-white">close</span>
+</div>
+<!-- Example Chip 2 -->
+<div class="glass-panel-active rounded-full px-4 py-2 flex items-center gap-2 group cursor-pointer hover:bg-white/10 transition-colors">
+<span class="font-label-sm text-label-sm text-primary tracking-wider">Friends</span>
+<span class="material-symbols-outlined text-[14px] text-white/40 hover:text-white">close</span>
+</div>
+<!-- Add Tag Input -->
+<input class="bg-transparent border-none focus:ring-0 text-white placeholder-white/30 font-label-sm text-label-sm tracking-wider min-w-[100px] py-2 outline-none" placeholder="Add tag..." type="text"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Suppressed BottomNavBar due to Contextual Flow (Task-Focused "Create" screen) -->
+</body></html>
