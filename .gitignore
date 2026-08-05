@@ -49,3 +49,6 @@ app.*.map.json
 # Local scratch output (debug screenshots, uiautomator dumps)
 /.screens/
 .flutter_run.log
+
+# Claude Code local tool state (not project source)
+/.claude/
