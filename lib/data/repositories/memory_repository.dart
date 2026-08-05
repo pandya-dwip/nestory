@@ -5,6 +5,7 @@ import '../db/app_database.dart';
 import '../demo/demo_memories.dart';
 import '../services/image_storage_service.dart';
 import '../../shared/models/memory.dart';
+import '../../shared/models/photo_display_mode.dart';
 
 bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
 
@@ -35,11 +36,11 @@ class MemoryRepository extends ChangeNotifier {
 
   Future<void> init() async {
     if (_ready) return;
-    await _reload();
+    await reload();
     _ready = true;
   }
 
-  Future<void> _reload() async {
+  Future<void> reload() async {
     final rows = await _db.memoriesDao.getAllMemories();
     final ids = rows.map((r) => r.id);
     final photosByMemory = await _db.memoryPhotosDao.getPhotosForMemories(ids);
@@ -53,6 +54,9 @@ class MemoryRepository extends ChangeNotifier {
           description: row.description,
           date: row.memoryDate,
           photoUrls: [for (final photo in photosByMemory[row.id] ?? const []) photo.localPath],
+          photoDisplayModes: [
+            for (final photo in photosByMemory[row.id] ?? const []) PhotoDisplayMode.fromName(photo.displayMode),
+          ],
           tags: tagsByMemory[row.id] ?? const [],
           isFavorite: row.isFavorite,
           isDemo: row.isDemo,
@@ -98,6 +102,7 @@ class MemoryRepository extends ChangeNotifier {
     required DateTime date,
     required List<String> tags,
     required List<String> photoPaths,
+    List<PhotoDisplayMode>? photoDisplayModes,
     bool isFavorite = false,
     bool isDemo = false,
   }) async {
@@ -112,12 +117,12 @@ class MemoryRepository extends ChangeNotifier {
         ),
       );
 
-      await _insertPhotos(memoryId, photoPaths);
+      await _insertPhotos(memoryId, photoPaths, displayModes: photoDisplayModes);
       await _linkTags(memoryId, tags);
       return memoryId;
     });
 
-    await _reload();
+    await reload();
     return byId(id)!;
   }
 
@@ -132,6 +137,7 @@ class MemoryRepository extends ChangeNotifier {
     required DateTime date,
     required List<String> tags,
     required List<String> photoPaths,
+    List<PhotoDisplayMode>? photoDisplayModes,
     bool? isFavorite,
   }) async {
     await _db.transaction(() async {
@@ -157,18 +163,18 @@ class MemoryRepository extends ChangeNotifier {
       }
 
       await _db.memoryPhotosDao.deletePhotosForMemory(id);
-      await _insertPhotos(id, photoPaths, reuseThumbnails: existingByPath);
+      await _insertPhotos(id, photoPaths, reuseThumbnails: existingByPath, displayModes: photoDisplayModes);
       await _linkTags(id, tags);
     });
 
-    await _reload();
+    await reload();
   }
 
   Future<void> toggleFavorite(int id) async {
     final memory = byId(id);
     if (memory == null) return;
     await _db.memoriesDao.setFavorite(id, !memory.isFavorite);
-    await _reload();
+    await reload();
   }
 
   Future<void> delete(int id) async {
@@ -178,7 +184,21 @@ class MemoryRepository extends ChangeNotifier {
       await ImageStorageService.delete(photo.thumbnailPath);
     }
     await _db.memoriesDao.deleteMemory(id);
-    await _reload();
+    await reload();
+  }
+
+  /// Deletes every memory (and their photos/tags) — never touches Profile
+  /// or AppSettings.
+  Future<void> deleteAllMemories() async {
+    for (final memory in _memories) {
+      final photos = await _db.memoryPhotosDao.getPhotosForMemory(memory.id);
+      for (final photo in photos) {
+        await ImageStorageService.delete(photo.localPath);
+        await ImageStorageService.delete(photo.thumbnailPath);
+      }
+    }
+    await _db.memoriesDao.deleteAllMemories();
+    await reload();
   }
 
   // ---- Demo data --------------------------------------------------------
@@ -214,7 +234,7 @@ class MemoryRepository extends ChangeNotifier {
       }
     }
     await _db.memoriesDao.deleteDemoMemories();
-    await _reload();
+    await reload();
   }
 
   // ---- Internal helpers ---------------------------------------------
@@ -223,17 +243,20 @@ class MemoryRepository extends ChangeNotifier {
     int memoryId,
     List<String> photoPaths, {
     Map<String, MemoryPhoto>? reuseThumbnails,
+    List<PhotoDisplayMode>? displayModes,
   }) async {
     int? coverPhotoId;
     for (var i = 0; i < photoPaths.length; i++) {
       final path = photoPaths[i];
       final thumbnailPath = reuseThumbnails?[path]?.thumbnailPath ?? await ImageStorageService.thumbnailFor(path);
+      final mode = (displayModes != null && i < displayModes.length) ? displayModes[i] : PhotoDisplayMode.fill;
       final photoId = await _db.memoryPhotosDao.insertPhoto(
         MemoryPhotosCompanion.insert(
           memoryId: memoryId,
           localPath: path,
           thumbnailPath: thumbnailPath,
           displayOrder: Value(i),
+          displayMode: Value(mode.name),
         ),
       );
       if (i == 0) coverPhotoId = photoId;

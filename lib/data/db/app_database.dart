@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import 'daos/app_settings_dao.dart';
@@ -30,8 +31,21 @@ class AppDatabase extends _$AppDatabase {
 
   static AppDatabase instance() => _instance ??= AppDatabase._();
 
+  /// Closes the current connection and drops the cached instance, so the
+  /// next [instance] call reopens fresh — used by Restore after the backup
+  /// archive has replaced the database file on disk.
+  static Future<void> closeAndReset() async {
+    await _instance?.close();
+    _instance = null;
+  }
+
+  static Future<String> filePath() async {
+    final docs = await getApplicationDocumentsDirectory();
+    return p.join(docs.path, 'nestory.sqlite');
+  }
+
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -39,11 +53,11 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
           await _createIndexes(m);
         },
-        // No schema versions before 1 exist yet, so there's nothing to step
-        // through today — but the switch is here, ready: bump
-        // [schemaVersion] and add `if (from < N) { ... }` blocks as the
-        // schema evolves instead of ever hardcoding a fresh createAll().
-        onUpgrade: (m, from, to) async {},
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.addColumn(memoryPhotos, memoryPhotos.displayMode);
+          }
+        },
         beforeOpen: (details) async {
           // MemoryPhotos/MemoryTags cascade deletes rely on this.
           await customStatement('PRAGMA foreign_keys = ON');

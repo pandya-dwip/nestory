@@ -1,12 +1,22 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/theme_controller.dart';
+import '../../data/repositories/app_settings_repository.dart';
 import '../../data/repositories/memory_repository.dart';
+import '../../data/repositories/profile_repository.dart';
+import '../../data/services/backup_service.dart';
+import '../../data/services/storage_stats_service.dart';
 import '../../shared/widgets/glass_bottom_sheet.dart';
 import '../../shared/widgets/glass_dialog.dart';
 import '../../shared/widgets/glass_icon_button.dart';
+import 'screens/about_screen.dart';
+import 'screens/privacy_policy_screen.dart';
 import 'widgets/settings_tile.dart';
 
 const _themeModeLabels = {
@@ -15,13 +25,39 @@ const _themeModeLabels = {
   ThemeMode.system: 'System',
 };
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  StorageStats? _storageStats;
+
+  @override
+  void initState() {
+    super.initState();
+    MemoryRepository.instance.addListener(_refreshStorageStats);
+    _refreshStorageStats();
+  }
+
+  @override
+  void dispose() {
+    MemoryRepository.instance.removeListener(_refreshStorageStats);
+    super.dispose();
+  }
+
+  Future<void> _refreshStorageStats() async {
+    final stats = await StorageStatsService.compute();
+    if (mounted) setState(() => _storageStats = stats);
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final theme = Theme.of(context);
+    final stats = _storageStats;
 
     return Scaffold(
       body: SafeArea(
@@ -61,9 +97,23 @@ class SettingsScreen extends StatelessWidget {
                   SettingsSection(
                     title: 'Memories',
                     tiles: [
-                      SettingsTile(icon: Icons.cloud_upload_outlined, title: 'Backup Memories', subtitle: 'Secure your vault', onTap: () {}),
-                      SettingsTile(icon: Icons.cloud_download_outlined, title: 'Restore Memories', onTap: () {}),
-                      SettingsTile(icon: Icons.delete_outline, title: 'Deleted Memories', subtitle: 'Recently removed', onTap: () {}),
+                      SettingsTile(
+                        icon: Icons.cloud_upload_outlined,
+                        title: 'Backup Memories',
+                        subtitle: 'Secure your vault',
+                        onTap: () => _backup(context),
+                      ),
+                      SettingsTile(
+                        icon: Icons.cloud_download_outlined,
+                        title: 'Restore Memories',
+                        onTap: () => _restore(context),
+                      ),
+                      SettingsTile(
+                        icon: Icons.delete_forever_outlined,
+                        title: 'Delete All Memories',
+                        subtitle: 'Keeps your profile and settings',
+                        onTap: () => _deleteAllMemories(context),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.stackMd),
@@ -88,7 +138,13 @@ class SettingsScreen extends StatelessWidget {
                   SettingsSection(
                     title: 'Storage',
                     tiles: [
-                      SettingsTile(icon: Icons.data_usage_outlined, title: 'Storage Usage', subtitle: '148 Memories, 624 Photos, 2.3 GB', onTap: () {}),
+                      SettingsTile(
+                        icon: Icons.data_usage_outlined,
+                        title: 'Storage Usage',
+                        subtitle: stats == null
+                            ? 'Calculating…'
+                            : '${stats.totalMemories} Memories, ${stats.totalPhotos} Photos, ${stats.formattedSize}',
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.stackMd),
@@ -108,10 +164,16 @@ class SettingsScreen extends StatelessWidget {
                   SettingsSection(
                     title: 'About',
                     tiles: [
-                      SettingsTile(icon: Icons.info_outline, title: 'About Nestory', onTap: () {}),
-                      SettingsTile(icon: Icons.policy_outlined, title: 'Privacy Policy', trailing: const Icon(Icons.open_in_new), onTap: () {}),
-                      SettingsTile(icon: Icons.star_outline, title: 'Rate App', trailing: const Icon(Icons.open_in_new), onTap: () {}),
-                      SettingsTile(icon: Icons.bug_report_outlined, title: 'Report Bug', onTap: () {}),
+                      SettingsTile(
+                        icon: Icons.info_outline,
+                        title: 'About Nestory',
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AboutScreen())),
+                      ),
+                      SettingsTile(
+                        icon: Icons.policy_outlined,
+                        title: 'Privacy Policy',
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen())),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.stackLg),
@@ -137,17 +199,12 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _setDemoData(BuildContext context) async {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
-    final added = await MemoryRepository.instance.seedDemoDataIfNeeded();
-    if (!context.mounted) return;
-    Navigator.of(context, rootNavigator: true).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(added ? 'Demo data added.' : 'Demo data already added.')),
-    );
+    await _withLoadingDialog(context, MemoryRepository.instance.seedDemoDataIfNeeded()).then((added) {
+      if (added == null || !context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(added ? 'Demo data added.' : 'Demo data already added.')),
+      );
+    });
   }
 
   Future<void> _clearDemoData(BuildContext context) async {
@@ -160,15 +217,122 @@ class SettingsScreen extends StatelessWidget {
     );
     if (confirmed != true || !context.mounted) return;
 
+    await _withLoadingDialog(context, MemoryRepository.instance.clearDemoData());
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Demo data removed.')));
+    }
+  }
+
+  Future<void> _deleteAllMemories(BuildContext context) async {
+    final confirmed = await GlassDialog.show(
+      context,
+      title: 'Delete All Memories?',
+      message: 'This will permanently delete all memories stored in Nestory.\n\nThis action cannot be undone.',
+      confirmLabel: 'Delete',
+      destructive: true,
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    await _withLoadingDialog(context, MemoryRepository.instance.deleteAllMemories());
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All memories deleted.')));
+    }
+  }
+
+  Future<void> _backup(BuildContext context) async {
+    try {
+      final bytes = await _withLoadingDialog(context, BackupService.buildArchive());
+      if (bytes == null || !context.mounted) return;
+
+      final stamp = DateTime.now();
+      String two(int n) => n.toString().padLeft(2, '0');
+      final fileName =
+          'nestory_backup_${stamp.year}${two(stamp.month)}${two(stamp.day)}_${two(stamp.hour)}${two(stamp.minute)}.zip';
+
+      final savedPath = await FilePicker.saveFile(
+        dialogTitle: 'Save Nestory backup',
+        fileName: fileName,
+        type: FileType.custom,
+        allowedExtensions: const ['zip'],
+        bytes: bytes,
+      );
+      if (savedPath == null || !context.mounted) return;
+
+      await AppSettingsRepository.instance.setLastBackupDate(DateTime.now());
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Backup saved.')));
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Backup failed. Please try again.')));
+      }
+    }
+  }
+
+  Future<void> _restore(BuildContext context) async {
+    try {
+      final picked = await FilePicker.pickFiles(
+        dialogTitle: 'Choose a Nestory backup',
+        type: FileType.custom,
+        allowedExtensions: const ['zip'],
+        withData: true,
+      );
+      if (picked == null || picked.files.isEmpty || !context.mounted) return;
+
+      final file = picked.files.single;
+      final bytes = file.bytes ?? (file.path != null ? await File(file.path!).readAsBytes() : null);
+      if (bytes == null) return;
+
+      if (!BackupService.looksLikeValidBackup(bytes)) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('That file is not a valid Nestory backup.')));
+        }
+        return;
+      }
+
+      if (!context.mounted) return;
+      final confirmed = await GlassDialog.show(
+        context,
+        title: 'Restore Backup?',
+        message: 'This replaces every memory, photo, and setting currently on this device with the contents of this backup.\n\nThis cannot be undone.',
+        confirmLabel: 'Restore',
+        destructive: true,
+      );
+      if (confirmed != true || !context.mounted) return;
+
+      await _withLoadingDialog(context, _performRestore(bytes));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Backup restored.')));
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Restore failed. Please try again.')));
+      }
+    }
+  }
+
+  Future<void> _performRestore(Uint8List bytes) async {
+    await BackupService.restoreArchive(bytes);
+    await MemoryRepository.instance.reload();
+    if (ProfileRepository.instance.isReady) await ProfileRepository.instance.reload();
+    if (AppSettingsRepository.instance.isReady) await AppSettingsRepository.instance.reload();
+  }
+
+  /// Shows a non-dismissible spinner while [future] runs, always closing it
+  /// afterward (success or failure) before returning the result.
+  Future<T?> _withLoadingDialog<T>(BuildContext context, Future<T> future) async {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => const Center(child: CircularProgressIndicator()),
     );
-    await MemoryRepository.instance.clearDemoData();
-    if (!context.mounted) return;
-    Navigator.of(context, rootNavigator: true).pop();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Demo data removed.')));
+    try {
+      final result = await future;
+      if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+      return result;
+    } catch (_) {
+      if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+      rethrow;
+    }
   }
 
   void _showThemePicker(BuildContext context, ThemeMode current) {

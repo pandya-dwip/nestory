@@ -6,10 +6,10 @@ ThemeMode _themeModeFromString(String value) {
   return ThemeMode.values.firstWhere((m) => m.name == value, orElse: () => ThemeMode.dark);
 }
 
-/// App-wide persistent settings — always a single row. Not yet wired into
-/// the UI (Phase 2 is the persistence layer only); ready to replace the
-/// in-memory-only `themeModeNotifier` once the app should remember the
-/// user's theme choice (and other settings) across restarts.
+/// App-wide persistent settings — always a single row, backed by
+/// [AppDatabase]. Not yet wired to `themeModeNotifier` (which still governs
+/// the live theme) — this is where that choice would persist across
+/// restarts once that's wired up.
 class AppSettingsRepository extends ChangeNotifier {
   AppSettingsRepository._();
 
@@ -36,26 +36,29 @@ class AppSettingsRepository extends ChangeNotifier {
 
   Future<void> init() async {
     if (_ready) return;
-    _settings = await _db.appSettingsDao.ensureExists();
+    await reload();
     _ready = true;
+  }
+
+  /// Re-fetches from the database — used at startup and after a restore
+  /// replaces the underlying database file.
+  Future<void> reload() async {
+    _settings = await _db.appSettingsDao.ensureExists();
     notifyListeners();
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
     await _db.appSettingsDao.setThemeMode(mode.name);
-    _settings = await _db.appSettingsDao.ensureExists();
-    notifyListeners();
+    await reload();
   }
 
   Future<void> setOnboardingCompleted(bool completed) async {
     await _db.appSettingsDao.setOnboardingCompleted(completed);
-    _settings = await _db.appSettingsDao.ensureExists();
-    notifyListeners();
+    await reload();
   }
 
   Future<void> setLastBackupDate(DateTime date) async {
     await _db.appSettingsDao.setLastBackupDate(date);
-    _settings = await _db.appSettingsDao.ensureExists();
-    notifyListeners();
+    await reload();
   }
 }

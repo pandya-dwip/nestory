@@ -104,4 +104,8 @@ class MemoriesDao extends DatabaseAccessor<AppDatabase> with _$MemoriesDaoMixin 
   }
 
   Future<int> deleteDemoMemories() => (delete(memories)..where((m) => m.isDemo.equals(true))).go();
+
+  /// Deletes every memory — Profile/AppSettings live in separate tables and
+  /// are untouched.
+  Future<int> deleteAllMemories() => delete(memories).go();
 }

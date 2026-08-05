@@ -18,5 +18,10 @@ class MemoryPhotos extends Table {
 
   IntColumn get displayOrder => integer().withDefault(const Constant(0))();
 
+  /// How this photo should be fitted when displayed: `fill`, `fit`,
+  /// `landscapePriority`, or `portraitPriority` (see `PhotoDisplayMode`).
+  /// A per-photo choice, not a global one.
+  TextColumn get displayMode => text().withDefault(const Constant('fill'))();
+
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

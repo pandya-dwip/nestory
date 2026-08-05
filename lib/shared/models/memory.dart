@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'photo_display_mode.dart';
+
 /// A single memory, backed 1:1 by a `memories` row (+ its `memory_photos`).
 @immutable
 class Memory {
@@ -10,6 +12,7 @@ class Memory {
     required this.date,
     required this.photoUrls,
     required this.tags,
+    this.photoDisplayModes = const [],
     this.isFavorite = false,
     this.isDemo = false,
   });
@@ -23,11 +26,24 @@ class Memory {
   /// files) — never a reference to the original picked/camera path.
   final List<String> photoUrls;
   final List<String> tags;
+
+  /// Parallel to [photoUrls] (same order/length) — how each photo should be
+  /// fitted when displayed. A per-photo choice stored with that photo, not
+  /// a memory-wide setting.
+  final List<PhotoDisplayMode> photoDisplayModes;
+
   final bool isFavorite;
   final bool isDemo;
 
   String get coverUrl => photoUrls.first;
   int get photoCount => photoUrls.length;
+
+  PhotoDisplayMode get coverDisplayMode => displayModeFor(0);
+
+  PhotoDisplayMode displayModeFor(int index) {
+    if (index < 0 || index >= photoDisplayModes.length) return PhotoDisplayMode.fill;
+    return photoDisplayModes[index];
+  }
 
   Memory copyWith({
     int? id,
@@ -36,6 +52,7 @@ class Memory {
     DateTime? date,
     List<String>? photoUrls,
     List<String>? tags,
+    List<PhotoDisplayMode>? photoDisplayModes,
     bool? isFavorite,
     bool? isDemo,
   }) {
@@ -46,6 +63,7 @@ class Memory {
       date: date ?? this.date,
       photoUrls: photoUrls ?? this.photoUrls,
       tags: tags ?? this.tags,
+      photoDisplayModes: photoDisplayModes ?? this.photoDisplayModes,
       isFavorite: isFavorite ?? this.isFavorite,
       isDemo: isDemo ?? this.isDemo,
     );

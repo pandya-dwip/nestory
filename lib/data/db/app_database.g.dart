@@ -631,6 +631,18 @@ class $MemoryPhotosTable extends MemoryPhotos
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _displayModeMeta = const VerificationMeta(
+    'displayMode',
+  );
+  @override
+  late final GeneratedColumn<String> displayMode = GeneratedColumn<String>(
+    'display_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('fill'),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -650,6 +662,7 @@ class $MemoryPhotosTable extends MemoryPhotos
     localPath,
     thumbnailPath,
     displayOrder,
+    displayMode,
     createdAt,
   ];
   @override
@@ -703,6 +716,15 @@ class $MemoryPhotosTable extends MemoryPhotos
         ),
       );
     }
+    if (data.containsKey('display_mode')) {
+      context.handle(
+        _displayModeMeta,
+        displayMode.isAcceptableOrUnknown(
+          data['display_mode']!,
+          _displayModeMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -738,6 +760,10 @@ class $MemoryPhotosTable extends MemoryPhotos
         DriftSqlType.int,
         data['${effectivePrefix}display_order'],
       )!,
+      displayMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_mode'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -757,6 +783,11 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
   final String localPath;
   final String thumbnailPath;
   final int displayOrder;
+
+  /// How this photo should be fitted when displayed: `fill`, `fit`,
+  /// `landscapePriority`, or `portraitPriority` (see `PhotoDisplayMode`).
+  /// A per-photo choice, not a global one.
+  final String displayMode;
   final DateTime createdAt;
   const MemoryPhoto({
     required this.id,
@@ -764,6 +795,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
     required this.localPath,
     required this.thumbnailPath,
     required this.displayOrder,
+    required this.displayMode,
     required this.createdAt,
   });
   @override
@@ -774,6 +806,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
     map['local_path'] = Variable<String>(localPath);
     map['thumbnail_path'] = Variable<String>(thumbnailPath);
     map['display_order'] = Variable<int>(displayOrder);
+    map['display_mode'] = Variable<String>(displayMode);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -785,6 +818,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
       localPath: Value(localPath),
       thumbnailPath: Value(thumbnailPath),
       displayOrder: Value(displayOrder),
+      displayMode: Value(displayMode),
       createdAt: Value(createdAt),
     );
   }
@@ -800,6 +834,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
       localPath: serializer.fromJson<String>(json['localPath']),
       thumbnailPath: serializer.fromJson<String>(json['thumbnailPath']),
       displayOrder: serializer.fromJson<int>(json['displayOrder']),
+      displayMode: serializer.fromJson<String>(json['displayMode']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -812,6 +847,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
       'localPath': serializer.toJson<String>(localPath),
       'thumbnailPath': serializer.toJson<String>(thumbnailPath),
       'displayOrder': serializer.toJson<int>(displayOrder),
+      'displayMode': serializer.toJson<String>(displayMode),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -822,6 +858,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
     String? localPath,
     String? thumbnailPath,
     int? displayOrder,
+    String? displayMode,
     DateTime? createdAt,
   }) => MemoryPhoto(
     id: id ?? this.id,
@@ -829,6 +866,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
     localPath: localPath ?? this.localPath,
     thumbnailPath: thumbnailPath ?? this.thumbnailPath,
     displayOrder: displayOrder ?? this.displayOrder,
+    displayMode: displayMode ?? this.displayMode,
     createdAt: createdAt ?? this.createdAt,
   );
   MemoryPhoto copyWithCompanion(MemoryPhotosCompanion data) {
@@ -842,6 +880,9 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
       displayOrder: data.displayOrder.present
           ? data.displayOrder.value
           : this.displayOrder,
+      displayMode: data.displayMode.present
+          ? data.displayMode.value
+          : this.displayMode,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -854,6 +895,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
           ..write('localPath: $localPath, ')
           ..write('thumbnailPath: $thumbnailPath, ')
           ..write('displayOrder: $displayOrder, ')
+          ..write('displayMode: $displayMode, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -866,6 +908,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
     localPath,
     thumbnailPath,
     displayOrder,
+    displayMode,
     createdAt,
   );
   @override
@@ -877,6 +920,7 @@ class MemoryPhoto extends DataClass implements Insertable<MemoryPhoto> {
           other.localPath == this.localPath &&
           other.thumbnailPath == this.thumbnailPath &&
           other.displayOrder == this.displayOrder &&
+          other.displayMode == this.displayMode &&
           other.createdAt == this.createdAt);
 }
 
@@ -886,6 +930,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
   final Value<String> localPath;
   final Value<String> thumbnailPath;
   final Value<int> displayOrder;
+  final Value<String> displayMode;
   final Value<DateTime> createdAt;
   const MemoryPhotosCompanion({
     this.id = const Value.absent(),
@@ -893,6 +938,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
     this.localPath = const Value.absent(),
     this.thumbnailPath = const Value.absent(),
     this.displayOrder = const Value.absent(),
+    this.displayMode = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   MemoryPhotosCompanion.insert({
@@ -901,6 +947,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
     required String localPath,
     required String thumbnailPath,
     this.displayOrder = const Value.absent(),
+    this.displayMode = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : memoryId = Value(memoryId),
        localPath = Value(localPath),
@@ -911,6 +958,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
     Expression<String>? localPath,
     Expression<String>? thumbnailPath,
     Expression<int>? displayOrder,
+    Expression<String>? displayMode,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -919,6 +967,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
       if (localPath != null) 'local_path': localPath,
       if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
       if (displayOrder != null) 'display_order': displayOrder,
+      if (displayMode != null) 'display_mode': displayMode,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -929,6 +978,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
     Value<String>? localPath,
     Value<String>? thumbnailPath,
     Value<int>? displayOrder,
+    Value<String>? displayMode,
     Value<DateTime>? createdAt,
   }) {
     return MemoryPhotosCompanion(
@@ -937,6 +987,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
       localPath: localPath ?? this.localPath,
       thumbnailPath: thumbnailPath ?? this.thumbnailPath,
       displayOrder: displayOrder ?? this.displayOrder,
+      displayMode: displayMode ?? this.displayMode,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -959,6 +1010,9 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
     if (displayOrder.present) {
       map['display_order'] = Variable<int>(displayOrder.value);
     }
+    if (displayMode.present) {
+      map['display_mode'] = Variable<String>(displayMode.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -973,6 +1027,7 @@ class MemoryPhotosCompanion extends UpdateCompanion<MemoryPhoto> {
           ..write('localPath: $localPath, ')
           ..write('thumbnailPath: $thumbnailPath, ')
           ..write('displayOrder: $displayOrder, ')
+          ..write('displayMode: $displayMode, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -2797,6 +2852,7 @@ typedef $$MemoryPhotosTableCreateCompanionBuilder =
       required String localPath,
       required String thumbnailPath,
       Value<int> displayOrder,
+      Value<String> displayMode,
       Value<DateTime> createdAt,
     });
 typedef $$MemoryPhotosTableUpdateCompanionBuilder =
@@ -2806,6 +2862,7 @@ typedef $$MemoryPhotosTableUpdateCompanionBuilder =
       Value<String> localPath,
       Value<String> thumbnailPath,
       Value<int> displayOrder,
+      Value<String> displayMode,
       Value<DateTime> createdAt,
     });
 
@@ -2857,6 +2914,11 @@ class $$MemoryPhotosTableFilterComposer
 
   ColumnFilters<int> get displayOrder => $composableBuilder(
     column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayMode => $composableBuilder(
+    column: $table.displayMode,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2918,6 +2980,11 @@ class $$MemoryPhotosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get displayMode => $composableBuilder(
+    column: $table.displayMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2969,6 +3036,11 @@ class $$MemoryPhotosTableAnnotationComposer
 
   GeneratedColumn<int> get displayOrder => $composableBuilder(
     column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get displayMode => $composableBuilder(
+    column: $table.displayMode,
     builder: (column) => column,
   );
 
@@ -3032,6 +3104,7 @@ class $$MemoryPhotosTableTableManager
                 Value<String> localPath = const Value.absent(),
                 Value<String> thumbnailPath = const Value.absent(),
                 Value<int> displayOrder = const Value.absent(),
+                Value<String> displayMode = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => MemoryPhotosCompanion(
                 id: id,
@@ -3039,6 +3112,7 @@ class $$MemoryPhotosTableTableManager
                 localPath: localPath,
                 thumbnailPath: thumbnailPath,
                 displayOrder: displayOrder,
+                displayMode: displayMode,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -3048,6 +3122,7 @@ class $$MemoryPhotosTableTableManager
                 required String localPath,
                 required String thumbnailPath,
                 Value<int> displayOrder = const Value.absent(),
+                Value<String> displayMode = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => MemoryPhotosCompanion.insert(
                 id: id,
@@ -3055,6 +3130,7 @@ class $$MemoryPhotosTableTableManager
                 localPath: localPath,
                 thumbnailPath: thumbnailPath,
                 displayOrder: displayOrder,
+                displayMode: displayMode,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0

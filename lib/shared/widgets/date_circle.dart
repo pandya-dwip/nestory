@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../models/photo_display_mode.dart';
 import 'app_photo.dart';
 
 /// A single day cell in the month calendar — a glass circle, optionally
@@ -10,6 +11,7 @@ class DateCircle extends StatelessWidget {
     super.key,
     required this.day,
     this.coverUrl,
+    this.coverDisplayMode = PhotoDisplayMode.fill,
     this.selected = false,
     this.dimmed = false,
     this.onTap,
@@ -17,6 +19,7 @@ class DateCircle extends StatelessWidget {
 
   final int day;
   final String? coverUrl;
+  final PhotoDisplayMode coverDisplayMode;
   final bool selected;
   final bool dimmed;
   final VoidCallback? onTap;
@@ -58,7 +61,7 @@ class DateCircle extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     if (hasMemory) ...[
-                      AppPhoto(url: coverUrl!, cacheWidth: 160),
+                      AppPhoto(url: coverUrl!, cacheWidth: 160, fit: coverDisplayMode.boxFit),
                       Container(color: Colors.black.withValues(alpha: 0.35)),
                     ],
                     Center(

@@ -36,7 +36,7 @@ class MemoryCard extends StatelessWidget {
                 children: [
                   DecoratedBox(
                     decoration: BoxDecoration(border: Border.all(color: colors.outline.withValues(alpha: 0.1))),
-                    child: AppPhoto(url: memory.coverUrl),
+                    child: AppPhoto(url: memory.coverUrl, fit: memory.coverDisplayMode.boxFit),
                   ),
                   DecoratedBox(
                     decoration: BoxDecoration(

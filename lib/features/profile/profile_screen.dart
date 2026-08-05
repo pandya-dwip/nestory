@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radius.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../data/repositories/memory_repository.dart';
+import '../../data/repositories/profile_repository.dart';
+import '../../data/services/image_storage_service.dart';
 import '../../shared/widgets/glass_button.dart';
 import '../../shared/widgets/glass_container.dart';
 import '../../shared/widgets/glass_icon_button.dart';
 import '../../shared/widgets/profile_avatar.dart';
 import '../../shared/widgets/stat_card.dart';
+import '../memory/widgets/image_source_sheet.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,11 +22,67 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _nameController = TextEditingController(text: 'Alex Rivera');
-  final _bioController = TextEditingController(text: 'Collector of quiet mornings and mountain air.');
+  late final _nameController = TextEditingController(text: ProfileRepository.instance.name);
+  late final _bioController = TextEditingController(text: ProfileRepository.instance.about);
+  final _nameFocus = FocusNode();
+  final _bioFocus = FocusNode();
+
+  bool _changingPhoto = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameFocus.addListener(_onFocusChange);
+    _bioFocus.addListener(_onFocusChange);
+    ProfileRepository.instance.init().then((_) {
+      if (!mounted) return;
+      _nameController.text = ProfileRepository.instance.name;
+      _bioController.text = ProfileRepository.instance.about;
+    });
+  }
+
+  void _onFocusChange() {
+    if (!_nameFocus.hasFocus && !_bioFocus.hasFocus) _save();
+  }
+
+  Future<void> _save() async {
+    await ProfileRepository.instance.save(
+      name: _nameController.text.trim(),
+      about: _bioController.text.trim(),
+      photoPath: ProfileRepository.instance.photoPath,
+    );
+  }
+
+  Future<void> _changePhoto() async {
+    if (_changingPhoto) return;
+    final source = await showImageSourceSheet(context);
+    if (source == null || !mounted) return;
+
+    setState(() => _changingPhoto = true);
+    try {
+      final picked = await ImagePicker().pickImage(source: source, imageQuality: 90);
+      if (picked == null) return;
+      final localPath = await ImageStorageService.copyIntoAppStorage(picked.path);
+      await ProfileRepository.instance.save(
+        name: _nameController.text.trim(),
+        about: _bioController.text.trim(),
+        photoPath: localPath,
+      );
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not update your photo.')));
+      }
+    } finally {
+      if (mounted) setState(() => _changingPhoto = false);
+    }
+  }
 
   @override
   void dispose() {
+    _nameFocus.removeListener(_onFocusChange);
+    _bioFocus.removeListener(_onFocusChange);
+    _nameFocus.dispose();
+    _bioFocus.dispose();
     _nameController.dispose();
     _bioController.dispose();
     super.dispose();
@@ -43,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GlassIconButton(icon: Icons.arrow_back, onPressed: () => Navigator.of(context).pop()),
-                  GlassIconButton(icon: Icons.edit_outlined, onPressed: () {}),
+                  GlassIconButton(icon: Icons.edit_outlined, onPressed: () => _nameFocus.requestFocus()),
                 ],
               ),
             ),
@@ -51,7 +111,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.stackMd),
                 children: [
-                  const Center(child: ProfileAvatar()),
+                  ListenableBuilder(
+                    listenable: ProfileRepository.instance,
+                    builder: (context, _) => Center(
+                      child: _changingPhoto
+                          ? const SizedBox(
+                              width: 140,
+                              height: 140,
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          : ProfileAvatar(photoUrl: ProfileRepository.instance.photoPath, onTap: _changePhoto),
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.unit),
                   Center(
                     child: Text(
@@ -62,17 +133,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: AppSpacing.stackMd),
                   TextField(
                     controller: _nameController,
+                    focusNode: _nameFocus,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.headlineMedium,
                     decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                    onSubmitted: (_) => _save(),
                   ),
                   const SizedBox(height: AppSpacing.stackSm),
                   TextField(
                     controller: _bioController,
+                    focusNode: _bioFocus,
                     textAlign: TextAlign.center,
                     maxLines: 3,
                     style: theme.textTheme.bodyMedium,
                     decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                    onSubmitted: (_) => _save(),
                   ),
                   const SizedBox(height: AppSpacing.stackLg),
                   ListenableBuilder(

@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radius.dart';
+import '../models/photo_display_mode.dart';
 import 'app_photo.dart';
 
 /// Hero image carousel — horizontal peek-a-boo swipe with scale/opacity
-/// falloff on neighboring slides and dot page indicators.
+/// falloff on neighboring slides and dot page indicators. Each slide is
+/// fitted per its own stored [PhotoDisplayMode].
 class PhotoCarousel extends StatefulWidget {
-  const PhotoCarousel({super.key, required this.photoUrls, this.height = 420});
+  const PhotoCarousel({super.key, required this.photoUrls, this.displayModes = const [], this.height = 420});
 
   final List<String> photoUrls;
+  final List<PhotoDisplayMode> displayModes;
   final double height;
+
+  PhotoDisplayMode _modeFor(int index) => index < displayModes.length ? displayModes[index] : PhotoDisplayMode.fill;
 
   @override
   State<PhotoCarousel> createState() => _PhotoCarouselState();
@@ -64,7 +69,7 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
                             children: [
                               DecoratedBox(
                                 decoration: BoxDecoration(border: Border.all(color: colors.glassBorder.withValues(alpha: 0.1))),
-                                child: AppPhoto(url: widget.photoUrls[index]),
+                                child: AppPhoto(url: widget.photoUrls[index], fit: widget._modeFor(index).boxFit),
                               ),
                               DecoratedBox(
                                 decoration: BoxDecoration(

@@ -58,7 +58,7 @@ class MemoryDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.stackSm),
-                    PhotoCarousel(photoUrls: memory.photoUrls),
+                    PhotoCarousel(photoUrls: memory.photoUrls, displayModes: memory.photoDisplayModes),
                     Expanded(
                       child: ListView(
                         padding: const EdgeInsets.fromLTRB(

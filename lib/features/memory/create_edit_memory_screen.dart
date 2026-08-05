@@ -7,6 +7,7 @@ import '../../core/theme/app_spacing.dart';
 import '../../data/repositories/memory_repository.dart';
 import '../../data/services/image_storage_service.dart';
 import '../../shared/models/memory.dart';
+import '../../shared/models/photo_display_mode.dart';
 import '../../shared/widgets/glass_container.dart';
 import '../../shared/widgets/glass_icon_button.dart';
 import '../../shared/widgets/glass_text_field.dart';
@@ -37,6 +38,9 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
   late final _tagInputController = TextEditingController();
 
   late List<String> _photoUrls = [...?widget.memory?.photoUrls];
+  late List<PhotoDisplayMode> _photoDisplayModes = [
+    for (var i = 0; i < _photoUrls.length; i++) widget.memory?.displayModeFor(i) ?? PhotoDisplayMode.fill,
+  ];
   late List<String> _tags = [...?widget.memory?.tags];
   late DateTime _date = widget.memory?.date ?? widget.initialDate ?? DateTime.now();
 
@@ -63,7 +67,10 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
       if (picked == null) return;
       final localPath = await ImageStorageService.copyIntoAppStorage(picked.path);
       if (!mounted) return;
-      setState(() => _photoUrls = [..._photoUrls, localPath]);
+      setState(() {
+        _photoUrls = [..._photoUrls, localPath];
+        _photoDisplayModes = [..._photoDisplayModes, PhotoDisplayMode.fill];
+      });
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not add that photo.')));
@@ -74,7 +81,10 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
   }
 
   void _removePhoto(int index) {
-    setState(() => _photoUrls = [..._photoUrls]..removeAt(index));
+    setState(() {
+      _photoUrls = [..._photoUrls]..removeAt(index);
+      _photoDisplayModes = [..._photoDisplayModes]..removeAt(index);
+    });
   }
 
   void _makeCover(int index) {
@@ -83,7 +93,16 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
       final urls = [..._photoUrls];
       final cover = urls.removeAt(index);
       _photoUrls = [cover, ...urls];
+
+      final modes = [..._photoDisplayModes];
+      final coverMode = modes.removeAt(index);
+      _photoDisplayModes = [coverMode, ...modes];
     });
+  }
+
+  void _changeCoverDisplayMode(PhotoDisplayMode mode) {
+    if (_photoDisplayModes.isEmpty) return;
+    setState(() => _photoDisplayModes = [mode, ..._photoDisplayModes.skip(1)]);
   }
 
   void _addTag(String value) {
@@ -126,6 +145,7 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
           date: _date,
           tags: _tags,
           photoPaths: _photoUrls,
+          photoDisplayModes: _photoDisplayModes,
         );
       } else {
         await MemoryRepository.instance.update(
@@ -135,6 +155,7 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
           date: _date,
           tags: _tags,
           photoPaths: _photoUrls,
+          photoDisplayModes: _photoDisplayModes,
         );
       }
       if (!mounted) return;
@@ -208,6 +229,8 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
                     onAddPhoto: _addPhoto,
                     onRemovePhoto: _removePhoto,
                     onMakeCover: _makeCover,
+                    coverDisplayMode: _photoDisplayModes.isNotEmpty ? _photoDisplayModes[0] : PhotoDisplayMode.fill,
+                    onChangeCoverDisplayMode: _changeCoverDisplayMode,
                     busy: _addingPhoto,
                   ),
                   const SizedBox(height: AppSpacing.stackLg),

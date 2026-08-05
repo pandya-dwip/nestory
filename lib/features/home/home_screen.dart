@@ -12,9 +12,12 @@ import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import 'widgets/memory_sheet_content.dart';
 import 'widgets/month_calendar.dart';
+import 'widgets/month_year_picker_sheet.dart';
 
-const _monthWindowBefore = 12;
-const _monthWindowAfter = 12;
+/// How far back/forward from today the calendar spans — bounds for both
+/// the [PageView] and the year picker.
+const _yearsBefore = 100;
+const _yearsAfter = 20;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,21 +27,41 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final List<DateTime> _months = List.generate(
-    _monthWindowBefore + _monthWindowAfter + 1,
-    (i) {
-      final now = DateTime.now();
-      return DateTime(now.year, now.month - _monthWindowBefore + i, 1);
-    },
-  );
-  late final PageController _monthController = PageController(initialPage: _monthWindowBefore);
+  final DateTime _now = DateTime.now();
+  late final int _minYear = _now.year - _yearsBefore;
+  late final int _maxYear = _now.year + _yearsAfter;
+  late final int _totalMonths = (_maxYear - _minYear + 1) * 12;
+  late final int _initialIndex = _indexFor(_now.year, _now.month);
+
+  late final PageController _monthController = PageController(initialPage: _initialIndex);
 
   DateTime? _selectedDate;
+
+  int _indexFor(int year, int month) => (year - _minYear) * 12 + (month - 1);
+
+  DateTime _monthAt(int index) => DateTime(_minYear + index ~/ 12, index % 12 + 1, 1);
 
   @override
   void dispose() {
     _monthController.dispose();
     super.dispose();
+  }
+
+  Future<void> _jumpTo(int index) async {
+    final clamped = index.clamp(0, _totalMonths - 1);
+    await _monthController.animateToPage(
+      clamped,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutCubic,
+    );
+  }
+
+  void _onSelectMonth(DateTime currentPageMonth, int month) {
+    _jumpTo(_indexFor(currentPageMonth.year, month));
+  }
+
+  void _onSelectYear(DateTime currentPageMonth, int year) {
+    _jumpTo(_indexFor(year, currentPageMonth.month));
   }
 
   Future<void> _openDay(DateTime date) async {
@@ -79,12 +102,19 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, _) => PageView.builder(
               scrollDirection: Axis.vertical,
               controller: _monthController,
-              itemCount: _months.length,
-              itemBuilder: (context, index) => MonthCalendarPage(
-                month: _months[index],
-                selectedDate: _selectedDate,
-                onSelectDate: _openDay,
-              ),
+              itemCount: _totalMonths,
+              itemBuilder: (context, index) {
+                final month = _monthAt(index);
+                return MonthCalendarPage(
+                  month: month,
+                  selectedDate: _selectedDate,
+                  onSelectDate: _openDay,
+                  onSelectMonth: (m) => _onSelectMonth(month, m),
+                  onSelectYear: (y) => _onSelectYear(month, y),
+                  minYear: _minYear,
+                  maxYear: _maxYear,
+                );
+              },
             ),
           ),
           Positioned(
@@ -137,9 +167,4 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-const _monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
-String _formatDayTitle(DateTime date) => '${_monthNames[date.month - 1]} ${date.day}';
+String _formatDayTitle(DateTime date) => '${monthNames[date.month - 1]} ${date.day}';

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radius.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/models/photo_display_mode.dart';
 import '../../../shared/widgets/app_photo.dart';
 import '../../../shared/widgets/glass_container.dart';
+import '../../../shared/widgets/glass_icon_button.dart';
+import 'photo_display_mode_sheet.dart';
 
 const maxMemoryPhotos = 5;
 
@@ -19,6 +22,8 @@ class PhotoPickerGrid extends StatelessWidget {
     required this.onAddPhoto,
     required this.onRemovePhoto,
     required this.onMakeCover,
+    this.coverDisplayMode = PhotoDisplayMode.fill,
+    this.onChangeCoverDisplayMode,
     this.busy = false,
   });
 
@@ -26,6 +31,11 @@ class PhotoPickerGrid extends StatelessWidget {
   final VoidCallback onAddPhoto;
   final ValueChanged<int> onRemovePhoto;
   final ValueChanged<int> onMakeCover;
+
+  /// How the cover (first) photo is currently fitted — a per-photo choice,
+  /// changed via the aspect-ratio control on the cover preview.
+  final PhotoDisplayMode coverDisplayMode;
+  final ValueChanged<PhotoDisplayMode>? onChangeCoverDisplayMode;
 
   /// True while a picked photo is being copied into app storage — swaps
   /// the add affordance for a spinner so a second tap can't queue up.
@@ -79,7 +89,7 @@ class PhotoPickerGrid extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.xl),
                 child: DecoratedBox(
                   decoration: BoxDecoration(border: Border.all(color: colors.glassBorder.withValues(alpha: 0.1))),
-                  child: AppPhoto(url: photoUrls.first),
+                  child: AppPhoto(url: photoUrls.first, fit: coverDisplayMode.boxFit),
                 ),
               ),
               const Positioned(
@@ -87,6 +97,20 @@ class PhotoPickerGrid extends StatelessWidget {
                 top: AppSpacing.stackSm,
                 child: _CoverBadge(),
               ),
+              if (onChangeCoverDisplayMode != null)
+                Positioned(
+                  right: AppSpacing.stackSm,
+                  top: AppSpacing.stackSm,
+                  child: GlassIconButton(
+                    icon: Icons.aspect_ratio,
+                    size: 40,
+                    semanticLabel: 'Cover display mode',
+                    onPressed: () async {
+                      final mode = await showPhotoDisplayModeSheet(context, coverDisplayMode);
+                      if (mode != null) onChangeCoverDisplayMode!(mode);
+                    },
+                  ),
+                ),
             ],
           ),
         ),
