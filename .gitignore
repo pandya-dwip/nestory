@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/build/
+/android/app/build/
+
+# Local scratch output (debug screenshots, uiautomator dumps)
+/.screens/
+.flutter_run.log

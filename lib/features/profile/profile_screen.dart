@@ -100,10 +100,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.unit),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GlassIconButton(icon: Icons.arrow_back, onPressed: () => Navigator.of(context).pop()),
-                  GlassIconButton(icon: Icons.edit_outlined, onPressed: () => _nameFocus.requestFocus()),
                 ],
               ),
             ),
@@ -140,16 +138,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onSubmitted: (_) => _save(),
                   ),
                   const SizedBox(height: AppSpacing.stackSm),
-                  TextField(
-                    controller: _bioController,
-                    focusNode: _bioFocus,
-                    textAlign: TextAlign.center,
-                    maxLines: 3,
-                    style: theme.textTheme.bodyMedium,
-                    decoration: const InputDecoration(border: InputBorder.none, isDense: true),
-                    onSubmitted: (_) => _save(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextField(
+                      controller: _bioController,
+                      focusNode: _bioFocus,
+                      textAlign: TextAlign.center,
+                      maxLines: null,
+                      minLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                      style: theme.textTheme.bodyMedium,
+                      decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.stackLg),
+                  const SizedBox(height: AppSpacing.stackMd),
                   ListenableBuilder(
                     listenable: MemoryRepository.instance,
                     builder: (context, _) {

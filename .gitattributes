@@ -1,0 +1,19 @@
+# Flutter's auto-generated multi-platform scaffolding. Nestory ships on
+# Android only; these folders are untouched `flutter create` boilerplate
+# (C++/CMake runners, Swift app delegates, etc.) kept only so the project
+# still builds if another platform is ever enabled. Excluded from GitHub's
+# language stats since none of it is hand-written app code.
+/android/**  linguist-vendored
+/ios/**      linguist-vendored
+/linux/**    linguist-vendored
+/macos/**    linguist-vendored
+/windows/**  linguist-vendored
+/web/**      linguist-vendored
+
+# Stitch-exported HTML mockups used as the Phase 1 design reference, not
+# part of the shipped app.
+/add_form/code.html    linguist-documentation
+/home/code.html        linguist-documentation
+/memory_box/code.html  linguist-documentation
+/profile/code.html     linguist-documentation
+/settings/code.html    linguist-documentation

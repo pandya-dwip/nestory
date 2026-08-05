@@ -57,11 +57,14 @@ class GlassBottomSheet extends StatelessWidget {
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
           child: Container(
             decoration: BoxDecoration(
               color: colors.surface.withValues(alpha: 0.55),
-              border: Border(top: BorderSide(color: colors.glassBorder.withValues(alpha: 0.15))),
+              border: Border(top: BorderSide(color: colors.glassBorder.withValues(alpha: 0.22))),
+              boxShadow: [
+                BoxShadow(color: colors.onSurface.withValues(alpha: 0.08), blurRadius: 0, offset: const Offset(0, 1)),
+              ],
             ),
             child: SafeArea(
               top: false,

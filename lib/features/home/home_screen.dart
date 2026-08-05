@@ -103,16 +103,21 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.vertical,
               controller: _monthController,
               itemCount: _totalMonths,
+              physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
               itemBuilder: (context, index) {
                 final month = _monthAt(index);
-                return MonthCalendarPage(
-                  month: month,
-                  selectedDate: _selectedDate,
-                  onSelectDate: _openDay,
-                  onSelectMonth: (m) => _onSelectMonth(month, m),
-                  onSelectYear: (y) => _onSelectYear(month, y),
-                  minYear: _minYear,
-                  maxYear: _maxYear,
+                return _RollingPage(
+                  controller: _monthController,
+                  index: index,
+                  child: MonthCalendarPage(
+                    month: month,
+                    selectedDate: _selectedDate,
+                    onSelectDate: _openDay,
+                    onSelectMonth: (m) => _onSelectMonth(month, m),
+                    onSelectYear: (y) => _onSelectYear(month, y),
+                    minYear: _minYear,
+                    maxYear: _maxYear,
+                  ),
                 );
               },
             ),
@@ -168,3 +173,40 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 String _formatDayTitle(DateTime date) => '${monthNames[date.month - 1]} ${date.day}';
+
+/// Subtle wheel-roll tilt as a page scrolls past — a small `rotateX` that's
+/// exactly zero when a page is centered (so it's invisible at rest) and
+/// grows as the page travels toward/away from center, giving vertical
+/// paging a physical "rolling" feel instead of a flat slide. Rebuilds only
+/// the [Transform] each frame — [child] is built once and reused.
+class _RollingPage extends StatelessWidget {
+  const _RollingPage({required this.controller, required this.index, required this.child});
+
+  final PageController controller;
+  final int index;
+  final Widget child;
+
+  static const _maxAngle = 0.16; // radians (~9°) at full page offset
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, animatedChild) {
+        var page = index.toDouble();
+        if (controller.hasClients && controller.position.haveDimensions) {
+          page = controller.page ?? page;
+        }
+        final delta = (page - index).clamp(-1.0, 1.0);
+        return Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.0012)
+            ..rotateX(delta * _maxAngle),
+          child: animatedChild,
+        );
+      },
+      child: child,
+    );
+  }
+}

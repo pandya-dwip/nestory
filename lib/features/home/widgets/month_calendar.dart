@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_spacing.dart';
@@ -39,7 +41,12 @@ class MonthCalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
     final leading = DateTime(month.year, month.month, 1).weekday % 7; // Sun=0
-    final headerStyle = Theme.of(context).textTheme.displayLarge?.copyWith(letterSpacing: 6);
+    final monthStyle = Theme.of(context).textTheme.displayLarge?.copyWith(letterSpacing: 6);
+    final yearStyle = monthStyle?.copyWith(
+      fontSize: 19,
+      letterSpacing: 2,
+      color: monthStyle.color?.withValues(alpha: 0.55),
+    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -54,15 +61,17 @@ class MonthCalendarPage extends StatelessWidget {
             fit: BoxFit.scaleDown,
             child: Row(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
                 GestureDetector(
                   onTap: () async {
                     final selected = await showMonthPickerSheet(context, month.month);
                     if (selected != null) onSelectMonth(selected);
                   },
-                  child: Text(monthNames[month.month - 1].toUpperCase(), style: headerStyle),
+                  child: Text(monthNames[month.month - 1].toUpperCase(), style: monthStyle),
                 ),
-                const SizedBox(width: AppSpacing.stackMd),
+                const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () async {
                     final selected = await showYearPickerSheet(
@@ -73,7 +82,7 @@ class MonthCalendarPage extends StatelessWidget {
                     );
                     if (selected != null) onSelectYear(selected);
                   },
-                  child: Text('${month.year}', style: headerStyle),
+                  child: Text('${month.year}', style: yearStyle),
                 ),
               ],
             ),
@@ -93,41 +102,69 @@ class MonthCalendarPage extends StatelessWidget {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final totalCells = leading + daysInMonth;
-                final rows = (totalCells / 7).ceil().clamp(1, 6);
-                const spacing = AppSpacing.unit;
-                final cellWidth = (constraints.maxWidth - spacing * 6) / 7;
-                final cellHeight = (constraints.maxHeight - spacing * (rows - 1)) / rows;
+                final rows = (totalCells / 7).ceil();
+                const columnSpacing = AppSpacing.unit; // tight column gap so circles use full width
 
-                return GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7,
-                    mainAxisSpacing: spacing,
-                    crossAxisSpacing: spacing,
-                    childAspectRatio: cellWidth / cellHeight,
-                  ),
-                  itemCount: rows * 7,
-                  itemBuilder: (context, index) {
-                    final dayNum = index - leading + 1;
-                    if (dayNum < 1 || dayNum > daysInMonth) return const SizedBox.shrink();
+                // Circle size is bound by the 7-column width — that's always
+                // the tighter constraint than row height. Row spacing then
+                // expands to consume whatever vertical room is left, so the
+                // grid always fills the available height edge-to-edge with
+                // no dead space below the last row, for every month (4-6
+                // rows), instead of leaving leftover height unused.
+                final cellSize = math.min(
+                  (constraints.maxWidth - columnSpacing * 6) / 7,
+                  constraints.maxHeight / rows,
+                );
+                // Fill most (not all) of the leftover height as row gaps —
+                // a little breathing room, but not the full amount, so a
+                // small margin is left below the last row instead of none.
+                const rowFillFactor = 0.75;
+                final rowSpacing =
+                    rows > 1 ? (constraints.maxHeight - rows * cellSize) / (rows - 1) * rowFillFactor : 0.0;
+                final gridHeight = rows * cellSize + (rows - 1) * rowSpacing;
 
-                    final date = DateTime(month.year, month.month, dayNum);
-                    final dayMemories = MemoryRepository.instance.onDate(date);
-                    final selected = selectedDate != null &&
-                        selectedDate!.year == date.year &&
-                        selectedDate!.month == date.month &&
-                        selectedDate!.day == date.day;
+                final gridWidth = 7 * cellSize + 6 * columnSpacing;
 
-                    return Center(
-                      child: DateCircle(
-                        day: dayNum,
-                        coverUrl: dayMemories.isNotEmpty ? dayMemories.first.coverUrl : null,
-                        coverDisplayMode: dayMemories.isNotEmpty ? dayMemories.first.coverDisplayMode : PhotoDisplayMode.fill,
-                        selected: selected,
-                        onTap: () => onSelectDate(date),
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    width: gridWidth,
+                    height: gridHeight,
+                    child: GridView.builder(
+                      primary: false,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 7,
+                        mainAxisSpacing: rowSpacing,
+                        crossAxisSpacing: columnSpacing,
+                        childAspectRatio: 1,
                       ),
-                    );
-                  },
+                      itemCount: rows * 7,
+                      itemBuilder: (context, index) {
+                        final dayNum = index - leading + 1;
+                        if (dayNum < 1 || dayNum > daysInMonth) return const SizedBox.shrink();
+
+                        final date = DateTime(month.year, month.month, dayNum);
+                        final dayMemories = MemoryRepository.instance.onDate(date);
+                        final selected = selectedDate != null &&
+                            selectedDate!.year == date.year &&
+                            selectedDate!.month == date.month &&
+                            selectedDate!.day == date.day;
+
+                        return Center(
+                          child: DateCircle(
+                            day: dayNum,
+                            coverUrl: dayMemories.isNotEmpty ? dayMemories.first.coverUrl : null,
+                            coverDisplayMode:
+                                dayMemories.isNotEmpty ? dayMemories.first.coverDisplayMode : PhotoDisplayMode.fill,
+                            selected: selected,
+                            onTap: () => onSelectDate(date),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 );
               },
             ),
