@@ -25,15 +25,28 @@ class GlassIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final iconWidget = Icon(icon, color: colors.onSurface, size: size * 0.42, semanticLabel: semanticLabel);
+    final iconWidget = Icon(
+      icon,
+      color: colors.onSurface,
+      size: size * 0.42,
+      semanticLabel: semanticLabel,
+    );
 
     final child = glass
         ? GlassContainer(
             borderRadius: size,
             alignment: Alignment.center,
-            child: SizedBox(width: size, height: size, child: Center(child: iconWidget)),
+            child: SizedBox(
+              width: size,
+              height: size,
+              child: Center(child: iconWidget),
+            ),
           )
-        : SizedBox(width: size, height: size, child: Center(child: iconWidget));
+        : SizedBox(
+            width: size,
+            height: size,
+            child: Center(child: iconWidget),
+          );
 
     return Material(
       color: Colors.transparent,

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_spacing.dart';
+import '../../../data/repositories/calendar_event_repository.dart';
 import '../../../data/repositories/memory_repository.dart';
 import '../../../shared/models/photo_display_mode.dart';
 import '../../../shared/widgets/date_circle.dart';
@@ -41,7 +42,9 @@ class MonthCalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
     final leading = DateTime(month.year, month.month, 1).weekday % 7; // Sun=0
-    final monthStyle = Theme.of(context).textTheme.displayLarge?.copyWith(letterSpacing: 6);
+    final monthStyle = Theme.of(
+      context,
+    ).textTheme.displayLarge?.copyWith(letterSpacing: 6);
     final yearStyle = monthStyle?.copyWith(
       fontSize: 19,
       letterSpacing: 2,
@@ -66,10 +69,16 @@ class MonthCalendarPage extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    final selected = await showMonthPickerSheet(context, month.month);
+                    final selected = await showMonthPickerSheet(
+                      context,
+                      month.month,
+                    );
                     if (selected != null) onSelectMonth(selected);
                   },
-                  child: Text(monthNames[month.month - 1].toUpperCase(), style: monthStyle),
+                  child: Text(
+                    monthNames[month.month - 1].toUpperCase(),
+                    style: monthStyle,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 GestureDetector(
@@ -90,11 +99,16 @@ class MonthCalendarPage extends StatelessWidget {
           const SizedBox(height: AppSpacing.stackLg),
           Row(
             children: _weekdayLabels
-                .map((d) => Expanded(
-                      child: Center(
-                        child: Text(d.toUpperCase(), style: Theme.of(context).textTheme.labelSmall),
+                .map(
+                  (d) => Expanded(
+                    child: Center(
+                      child: Text(
+                        d.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelSmall,
                       ),
-                    ))
+                    ),
+                  ),
+                )
                 .toList(),
           ),
           const SizedBox(height: AppSpacing.stackMd),
@@ -103,7 +117,8 @@ class MonthCalendarPage extends StatelessWidget {
               builder: (context, constraints) {
                 final totalCells = leading + daysInMonth;
                 final rows = (totalCells / 7).ceil();
-                const columnSpacing = AppSpacing.unit; // tight column gap so circles use full width
+                const columnSpacing = AppSpacing
+                    .unit; // tight column gap so circles use full width
 
                 // Circle size is bound by the 7-column width — that's always
                 // the tighter constraint than row height. Row spacing then
@@ -119,8 +134,11 @@ class MonthCalendarPage extends StatelessWidget {
                 // a little breathing room, but not the full amount, so a
                 // small margin is left below the last row instead of none.
                 const rowFillFactor = 0.75;
-                final rowSpacing =
-                    rows > 1 ? (constraints.maxHeight - rows * cellSize) / (rows - 1) * rowFillFactor : 0.0;
+                final rowSpacing = rows > 1
+                    ? (constraints.maxHeight - rows * cellSize) /
+                          (rows - 1) *
+                          rowFillFactor
+                    : 0.0;
                 final gridHeight = rows * cellSize + (rows - 1) * rowSpacing;
 
                 final gridWidth = 7 * cellSize + 6 * columnSpacing;
@@ -143,11 +161,18 @@ class MonthCalendarPage extends StatelessWidget {
                       itemCount: rows * 7,
                       itemBuilder: (context, index) {
                         final dayNum = index - leading + 1;
-                        if (dayNum < 1 || dayNum > daysInMonth) return const SizedBox.shrink();
+                        if (dayNum < 1 || dayNum > daysInMonth) {
+                          return const SizedBox.shrink();
+                        }
 
                         final date = DateTime(month.year, month.month, dayNum);
-                        final dayMemories = MemoryRepository.instance.onDate(date);
-                        final selected = selectedDate != null &&
+                        final dayMemories = MemoryRepository.instance.onDate(
+                          date,
+                        );
+                        final dayEvents = CalendarEventRepository.instance
+                            .onDate(date);
+                        final selected =
+                            selectedDate != null &&
                             selectedDate!.year == date.year &&
                             selectedDate!.month == date.month &&
                             selectedDate!.day == date.day;
@@ -155,9 +180,13 @@ class MonthCalendarPage extends StatelessWidget {
                         return Center(
                           child: DateCircle(
                             day: dayNum,
-                            coverUrl: dayMemories.isNotEmpty ? dayMemories.first.coverUrl : null,
-                            coverDisplayMode:
-                                dayMemories.isNotEmpty ? dayMemories.first.coverDisplayMode : PhotoDisplayMode.fill,
+                            coverUrl: dayMemories.isNotEmpty
+                                ? dayMemories.first.coverUrl
+                                : null,
+                            coverDisplayMode: dayMemories.isNotEmpty
+                                ? dayMemories.first.coverDisplayMode
+                                : PhotoDisplayMode.fill,
+                            eventCount: dayEvents.length,
                             selected: selected,
                             onTap: () => onSelectDate(date),
                           ),

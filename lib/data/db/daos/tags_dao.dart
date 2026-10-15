@@ -16,7 +16,9 @@ class TagsDao extends DatabaseAccessor<AppDatabase> with _$TagsDaoMixin {
   Future<List<TagEntity>> getAllTags() => select(tags).get();
 
   Future<TagEntity?> findByName(String name) {
-    return (select(tags)..where((t) => t.name.lower().equals(name.toLowerCase()))).getSingleOrNull();
+    return (select(tags)
+          ..where((t) => t.name.lower().equals(name.toLowerCase())))
+        .getSingleOrNull();
   }
 
   /// Returns the existing tag's id if [name] already exists (any case),
@@ -37,18 +39,20 @@ class TagsDao extends DatabaseAccessor<AppDatabase> with _$TagsDaoMixin {
   }
 
   Future<void> replaceMemoryTags(int memoryId, Iterable<int> tagIds) async {
-    await (delete(memoryTags)..where((mt) => mt.memoryId.equals(memoryId))).go();
+    await (delete(
+      memoryTags,
+    )..where((mt) => mt.memoryId.equals(memoryId))).go();
     await linkMemoryToTags(memoryId, tagIds);
   }
 
   /// Batch fetch tag names for many memories at once, grouped by memory id.
-  Future<Map<int, List<String>>> getTagNamesForMemories(Iterable<int> memoryIds) async {
+  Future<Map<int, List<String>>> getTagNamesForMemories(
+    Iterable<int> memoryIds,
+  ) async {
     if (memoryIds.isEmpty) return const {};
     final rows = await (select(memoryTags).join([
       innerJoin(tags, tags.id.equalsExp(memoryTags.tagId)),
-    ])
-          ..where(memoryTags.memoryId.isIn(memoryIds)))
-        .get();
+    ])..where(memoryTags.memoryId.isIn(memoryIds))).get();
 
     final grouped = <int, List<String>>{};
     for (final row in rows) {

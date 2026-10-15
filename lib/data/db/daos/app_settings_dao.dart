@@ -11,11 +11,14 @@ const _singletonId = 1;
 /// defaulted row on first run (created lazily by [ensureExists]) so callers
 /// never have to null-check "no settings yet".
 @DriftAccessor(tables: [AppSettings])
-class AppSettingsDao extends DatabaseAccessor<AppDatabase> with _$AppSettingsDaoMixin {
+class AppSettingsDao extends DatabaseAccessor<AppDatabase>
+    with _$AppSettingsDaoMixin {
   AppSettingsDao(super.db);
 
   Future<AppSettingsEntity> ensureExists() async {
-    final existing = await (select(appSettings)..where((s) => s.id.equals(_singletonId))).getSingleOrNull();
+    final existing = await (select(
+      appSettings,
+    )..where((s) => s.id.equals(_singletonId))).getSingleOrNull();
     if (existing != null) return existing;
 
     final id = await into(appSettings).insert(const AppSettingsCompanion());
@@ -30,19 +33,31 @@ class AppSettingsDao extends DatabaseAccessor<AppDatabase> with _$AppSettingsDao
 
   Future<void> setThemeMode(String themeMode) async {
     await ensureExists();
-    await (update(appSettings)..where((s) => s.id.equals(_singletonId)))
-        .write(AppSettingsCompanion(themeMode: Value(themeMode), updatedAt: Value(DateTime.now())));
+    await (update(appSettings)..where((s) => s.id.equals(_singletonId))).write(
+      AppSettingsCompanion(
+        themeMode: Value(themeMode),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   Future<void> setOnboardingCompleted(bool completed) async {
     await ensureExists();
-    await (update(appSettings)..where((s) => s.id.equals(_singletonId)))
-        .write(AppSettingsCompanion(onboardingCompleted: Value(completed), updatedAt: Value(DateTime.now())));
+    await (update(appSettings)..where((s) => s.id.equals(_singletonId))).write(
+      AppSettingsCompanion(
+        onboardingCompleted: Value(completed),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   Future<void> setLastBackupDate(DateTime date) async {
     await ensureExists();
-    await (update(appSettings)..where((s) => s.id.equals(_singletonId)))
-        .write(AppSettingsCompanion(lastBackupDate: Value(date), updatedAt: Value(DateTime.now())));
+    await (update(appSettings)..where((s) => s.id.equals(_singletonId))).write(
+      AppSettingsCompanion(
+        lastBackupDate: Value(date),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 }

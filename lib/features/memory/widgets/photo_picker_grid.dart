@@ -62,14 +62,24 @@ class PhotoPickerGrid extends StatelessWidget {
                   SizedBox(
                     width: 56,
                     height: 56,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: colors.onSurface.withValues(alpha: 0.6)),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: colors.onSurface.withValues(alpha: 0.6),
+                    ),
                   )
                 else
-                  Icon(Icons.add_photo_alternate_outlined, size: 56, color: colors.onSurface.withValues(alpha: 0.4)),
+                  Icon(
+                    Icons.add_photo_alternate_outlined,
+                    size: 56,
+                    color: colors.onSurface.withValues(alpha: 0.4),
+                  ),
                 const SizedBox(height: AppSpacing.stackSm),
                 Text('Add Photos', style: theme.textTheme.headlineMedium),
                 const SizedBox(height: 4),
-                Text('Maximum $maxMemoryPhotos photos', style: theme.textTheme.labelSmall),
+                Text(
+                  'Maximum $maxMemoryPhotos photos',
+                  style: theme.textTheme.labelSmall,
+                ),
               ],
             ),
           ),
@@ -88,8 +98,15 @@ class PhotoPickerGrid extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.xl),
                 child: DecoratedBox(
-                  decoration: BoxDecoration(border: Border.all(color: colors.glassBorder.withValues(alpha: 0.1))),
-                  child: AppPhoto(url: photoUrls.first, fit: coverDisplayMode.boxFit),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: colors.glassBorder.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  child: AppPhoto(
+                    url: photoUrls.first,
+                    fit: coverDisplayMode.boxFit,
+                  ),
                 ),
               ),
               const Positioned(
@@ -106,7 +123,10 @@ class PhotoPickerGrid extends StatelessWidget {
                     size: 40,
                     semanticLabel: 'Cover display mode',
                     onPressed: () async {
-                      final mode = await showPhotoDisplayModeSheet(context, coverDisplayMode);
+                      final mode = await showPhotoDisplayModeSheet(
+                        context,
+                        coverDisplayMode,
+                      );
                       if (mode != null) onChangeCoverDisplayMode!(mode);
                     },
                   ),
@@ -119,8 +139,10 @@ class PhotoPickerGrid extends StatelessWidget {
           height: 76,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: photoUrls.length + (photoUrls.length < maxMemoryPhotos ? 1 : 0),
-            separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.stackSm),
+            itemCount:
+                photoUrls.length + (photoUrls.length < maxMemoryPhotos ? 1 : 0),
+            separatorBuilder: (_, _) =>
+                const SizedBox(width: AppSpacing.stackSm),
             itemBuilder: (context, index) {
               if (index == photoUrls.length) {
                 return GestureDetector(
@@ -134,9 +156,15 @@ class PhotoPickerGrid extends StatelessWidget {
                       child: busy
                           ? Padding(
                               padding: const EdgeInsets.all(24),
-                              child: CircularProgressIndicator(strokeWidth: 2, color: colors.onSurface.withValues(alpha: 0.6)),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: colors.onSurface.withValues(alpha: 0.6),
+                              ),
                             )
-                          : Icon(Icons.add, color: colors.onSurface.withValues(alpha: 0.6)),
+                          : Icon(
+                              Icons.add,
+                              color: colors.onSurface.withValues(alpha: 0.6),
+                            ),
                     ),
                   ),
                 );
@@ -156,7 +184,9 @@ class PhotoPickerGrid extends StatelessWidget {
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: isCover ? colors.onSurface.withValues(alpha: 0.8) : colors.glassBorder.withValues(alpha: 0.1),
+                              color: isCover
+                                  ? colors.onSurface.withValues(alpha: 0.8)
+                                  : colors.glassBorder.withValues(alpha: 0.1),
                               width: isCover ? 1.5 : 1,
                             ),
                           ),
@@ -171,8 +201,15 @@ class PhotoPickerGrid extends StatelessWidget {
                         onTap: () => onRemovePhoto(index),
                         child: Container(
                           padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.6), shape: BoxShape.circle),
-                          child: const Icon(Icons.close, size: 12, color: Colors.white),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            size: 12,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -184,7 +221,10 @@ class PhotoPickerGrid extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.stackSm),
         Center(
-          child: Text('${photoUrls.length} / $maxMemoryPhotos', style: theme.textTheme.labelSmall),
+          child: Text(
+            '${photoUrls.length} / $maxMemoryPhotos',
+            style: theme.textTheme.labelSmall,
+          ),
         ),
       ],
     );
@@ -198,7 +238,10 @@ class _CoverBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.unit + 2, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.unit + 2,
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppRadius.full),
@@ -206,7 +249,9 @@ class _CoverBadge extends StatelessWidget {
       ),
       child: Text(
         'COVER',
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: colors.primary, fontSize: 10),
+        style: Theme.of(
+          context,
+        ).textTheme.labelSmall?.copyWith(color: colors.primary, fontSize: 10),
       ),
     );
   }

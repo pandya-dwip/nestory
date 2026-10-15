@@ -22,8 +22,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late final _nameController = TextEditingController(text: ProfileRepository.instance.name);
-  late final _bioController = TextEditingController(text: ProfileRepository.instance.about);
+  late final _nameController = TextEditingController(
+    text: ProfileRepository.instance.name,
+  );
+  late final _bioController = TextEditingController(
+    text: ProfileRepository.instance.about,
+  );
   final _nameFocus = FocusNode();
   final _bioFocus = FocusNode();
 
@@ -60,9 +64,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     setState(() => _changingPhoto = true);
     try {
-      final picked = await ImagePicker().pickImage(source: source, imageQuality: 90);
+      final picked = await ImagePicker().pickImage(
+        source: source,
+        imageQuality: 90,
+      );
       if (picked == null) return;
-      final localPath = await ImageStorageService.copyIntoAppStorage(picked.path);
+      final localPath = await ImageStorageService.copyIntoAppStorage(
+        picked.path,
+      );
       await ProfileRepository.instance.save(
         name: _nameController.text.trim(),
         about: _bioController.text.trim(),
@@ -70,7 +79,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not update your photo.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not update your photo.')),
+        );
       }
     } finally {
       if (mounted) setState(() => _changingPhoto = false);
@@ -98,16 +109,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.unit),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.gutter,
+                vertical: AppSpacing.unit,
+              ),
               child: Row(
                 children: [
-                  GlassIconButton(icon: Icons.arrow_back, onPressed: () => Navigator.of(context).pop()),
+                  GlassIconButton(
+                    icon: Icons.arrow_back,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                 ],
               ),
             ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.stackMd),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.gutter,
+                  vertical: AppSpacing.stackMd,
+                ),
                 children: [
                   ListenableBuilder(
                     listenable: ProfileRepository.instance,
@@ -118,14 +138,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 140,
                               child: Center(child: CircularProgressIndicator()),
                             )
-                          : ProfileAvatar(photoUrl: ProfileRepository.instance.photoPath, onTap: _changePhoto),
+                          : ProfileAvatar(
+                              photoUrl: ProfileRepository.instance.photoPath,
+                              onTap: _changePhoto,
+                            ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.unit),
                   Center(
                     child: Text(
                       'Tap to change photo',
-                      style: theme.textTheme.labelSmall?.copyWith(color: colors.onSurfaceVariant.withValues(alpha: 0.6)),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: colors.onSurfaceVariant.withValues(alpha: 0.6),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.stackMd),
@@ -134,7 +159,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     focusNode: _nameFocus,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.headlineMedium,
-                    decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
                     onSubmitted: (_) => _save(),
                   ),
                   const SizedBox(height: AppSpacing.stackSm),
@@ -149,7 +177,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
                       style: theme.textTheme.bodyMedium,
-                      decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.stackMd),
@@ -158,16 +189,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     builder: (context, _) {
                       final repo = MemoryRepository.instance;
                       return GlassContainer(
-                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackMd),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.stackMd,
+                        ),
                         child: GridView.count(
                           crossAxisCount: 2,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           childAspectRatio: 1.5,
                           children: [
-                            StatCard(icon: Icons.auto_awesome_mosaic_outlined, value: '${repo.totalMemories}', label: 'Memories'),
-                            StatCard(icon: Icons.photo_library_outlined, value: '${repo.totalPhotos}', label: 'Photos'),
-                            StatCard(icon: Icons.sell_outlined, value: '${repo.totalTags}', label: 'Tags'),
+                            StatCard(
+                              icon: Icons.auto_awesome_mosaic_outlined,
+                              value: '${repo.totalMemories}',
+                              label: 'Memories',
+                            ),
+                            StatCard(
+                              icon: Icons.photo_library_outlined,
+                              value: '${repo.totalPhotos}',
+                              label: 'Photos',
+                            ),
+                            StatCard(
+                              icon: Icons.sell_outlined,
+                              value: '${repo.totalTags}',
+                              label: 'Tags',
+                            ),
                             StatCard(
                               icon: Icons.calendar_month_outlined,
                               value: '${repo.firstMemoryYear ?? '—'}',
@@ -181,20 +226,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: AppSpacing.stackMd),
                   Row(
                     children: [
-                      Expanded(child: GlassButton(label: 'Backup', icon: Icons.backup_outlined, expand: true, onPressed: () {})),
+                      Expanded(
+                        child: GlassButton(
+                          label: 'Backup',
+                          icon: Icons.backup_outlined,
+                          expand: true,
+                          onPressed: () {},
+                        ),
+                      ),
                       const SizedBox(width: AppSpacing.stackSm),
-                      Expanded(child: GlassButton(label: 'Restore', icon: Icons.restore_outlined, expand: true, onPressed: () {})),
+                      Expanded(
+                        child: GlassButton(
+                          label: 'Restore',
+                          icon: Icons.restore_outlined,
+                          expand: true,
+                          onPressed: () {},
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.stackLg),
                   GlassContainer(
                     borderRadius: AppRadius.md,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackMd),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.stackMd,
+                    ),
                     child: Column(
                       children: [
-                        Text('NESTORY', style: theme.textTheme.labelSmall?.copyWith(letterSpacing: 3)),
+                        Text(
+                          'NESTORY',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            letterSpacing: 3,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text('Version 1.0.0', style: theme.textTheme.labelSmall?.copyWith(color: colors.onSurfaceVariant.withValues(alpha: 0.5))),
+                        Text(
+                          'Version 1.0.0',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colors.onSurfaceVariant.withValues(
+                              alpha: 0.5,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

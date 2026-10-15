@@ -19,15 +19,24 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.unit),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.gutter,
+                vertical: AppSpacing.unit,
+              ),
               child: Row(
                 children: [
-                  GlassIconButton(icon: Icons.arrow_back, onPressed: () => Navigator.of(context).pop()),
+                  GlassIconButton(
+                    icon: Icons.arrow_back,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                   Expanded(
                     child: Text(
                       'ABOUT',
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.headlineMedium?.copyWith(fontSize: 18, letterSpacing: 4),
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontSize: 18,
+                        letterSpacing: 4,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 48),
@@ -36,7 +45,10 @@ class AboutScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.stackLg),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.gutter,
+                  vertical: AppSpacing.stackLg,
+                ),
                 children: [
                   Center(
                     child: Container(
@@ -45,14 +57,25 @@ class AboutScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: colors.glassBorder.withValues(alpha: 0.15)),
+                        border: Border.all(
+                          color: colors.glassBorder.withValues(alpha: 0.15),
+                        ),
                       ),
-                      child: Icon(Icons.auto_awesome_outlined, size: 36, color: colors.onSurface.withValues(alpha: 0.8)),
+                      child: Icon(
+                        Icons.auto_awesome_outlined,
+                        size: 36,
+                        color: colors.onSurface.withValues(alpha: 0.8),
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.stackMd),
                   Center(
-                    child: Text('NESTORY', style: theme.textTheme.headlineMedium?.copyWith(letterSpacing: 6)),
+                    child: Text(
+                      'NESTORY',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        letterSpacing: 6,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.stackSm),
                   Center(
@@ -101,7 +124,10 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label.toUpperCase(), style: theme.textTheme.labelSmall?.copyWith(color: colors.outline)),
+          Text(
+            label.toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(color: colors.outline),
+          ),
           Text(value, style: theme.textTheme.bodyLarge),
         ],
       ),
@@ -114,6 +140,9 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(height: 1, color: context.colors.glassBorder.withValues(alpha: 0.1));
+    return Divider(
+      height: 1,
+      color: context.colors.glassBorder.withValues(alpha: 0.1),
+    );
   }
 }

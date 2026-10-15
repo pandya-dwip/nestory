@@ -17,7 +17,8 @@ class AppSettings extends Table {
   /// repository maps it to/from `ThemeMode`.
   TextColumn get themeMode => text().withDefault(const Constant('dark'))();
 
-  BoolColumn get onboardingCompleted => boolean().withDefault(const Constant(false))();
+  BoolColumn get onboardingCompleted =>
+      boolean().withDefault(const Constant(false))();
 
   DateTimeColumn get lastBackupDate => dateTime().nullable()();
 

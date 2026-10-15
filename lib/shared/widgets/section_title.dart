@@ -18,8 +18,8 @@ class SectionTitle extends StatelessWidget {
     return Text(
       text.toUpperCase(),
       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: dim ? colors.outline : colors.onSurfaceVariant,
-          ),
+        color: dim ? colors.outline : colors.onSurfaceVariant,
+      ),
     );
   }
 }

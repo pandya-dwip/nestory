@@ -27,15 +27,14 @@ class GlassTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final theme = Theme.of(context);
-    final style = textStyle ?? theme.textTheme.bodyLarge?.copyWith(color: colors.onSurface);
+    final style =
+        textStyle ??
+        theme.textTheme.bodyLarge?.copyWith(color: colors.onSurface);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label.toUpperCase(),
-          style: theme.textTheme.labelSmall,
-        ),
+        Text(label.toUpperCase(), style: theme.textTheme.labelSmall),
         const SizedBox(height: AppSpacing.stackSm),
         TextField(
           controller: controller,
@@ -47,11 +46,27 @@ class GlassTextField extends StatelessWidget {
           decoration: InputDecoration(
             isDense: true,
             hintText: hint,
-            hintStyle: style?.copyWith(color: colors.onSurface.withValues(alpha: 0.3)),
-            contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
-            border: UnderlineInputBorder(borderSide: BorderSide(color: colors.glassBorder.withValues(alpha: 0.15))),
-            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: colors.glassBorder.withValues(alpha: 0.15))),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: colors.glassBorder.withValues(alpha: 0.5))),
+            hintStyle: style?.copyWith(
+              color: colors.onSurface.withValues(alpha: 0.3),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.stackSm,
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: colors.glassBorder.withValues(alpha: 0.15),
+              ),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: colors.glassBorder.withValues(alpha: 0.15),
+              ),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: colors.glassBorder.withValues(alpha: 0.5),
+              ),
+            ),
           ),
         ),
       ],

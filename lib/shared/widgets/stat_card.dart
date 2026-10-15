@@ -6,7 +6,12 @@ import '../../core/theme/app_spacing.dart';
 
 /// Icon + big number + label used in the Profile statistics grid.
 class StatCard extends StatelessWidget {
-  const StatCard({super.key, required this.icon, required this.value, required this.label});
+  const StatCard({
+    super.key,
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
 
   final IconData icon;
   final String value;
@@ -26,9 +31,19 @@ class StatCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
           child: Column(
             children: [
-              Icon(icon, color: colors.onSurface.withValues(alpha: 0.7), size: 24),
+              Icon(
+                icon,
+                color: colors.onSurface.withValues(alpha: 0.7),
+                size: 24,
+              ),
               const SizedBox(height: AppSpacing.unit),
-              Text(value, style: theme.textTheme.headlineMedium?.copyWith(fontSize: 22, fontWeight: FontWeight.w500)),
+              Text(
+                value,
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(
                 label.toUpperCase(),

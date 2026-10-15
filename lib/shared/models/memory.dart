@@ -41,7 +41,9 @@ class Memory {
   PhotoDisplayMode get coverDisplayMode => displayModeFor(0);
 
   PhotoDisplayMode displayModeFor(int index) {
-    if (index < 0 || index >= photoDisplayModes.length) return PhotoDisplayMode.fill;
+    if (index < 0 || index >= photoDisplayModes.length) {
+      return PhotoDisplayMode.fill;
+    }
     return photoDisplayModes[index];
   }
 

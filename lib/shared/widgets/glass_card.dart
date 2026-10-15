@@ -32,9 +32,15 @@ class _GlassCardState extends State<GlassCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onTap,
-      onTapDown: widget.onTap == null ? null : (_) => setState(() => _pressed = true),
-      onTapCancel: widget.onTap == null ? null : () => setState(() => _pressed = false),
-      onTapUp: widget.onTap == null ? null : (_) => setState(() => _pressed = false),
+      onTapDown: widget.onTap == null
+          ? null
+          : (_) => setState(() => _pressed = true),
+      onTapCancel: widget.onTap == null
+          ? null
+          : () => setState(() => _pressed = false),
+      onTapUp: widget.onTap == null
+          ? null
+          : (_) => setState(() => _pressed = false),
       child: AnimatedScale(
         scale: _pressed ? 0.98 : 1,
         duration: const Duration(milliseconds: 150),

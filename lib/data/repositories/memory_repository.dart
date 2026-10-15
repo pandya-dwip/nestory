@@ -7,7 +7,8 @@ import '../services/image_storage_service.dart';
 import '../../shared/models/memory.dart';
 import '../../shared/models/photo_display_mode.dart';
 
-bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+bool _isSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
 
 /// Single source of truth for memories, backed by [AppDatabase] (Drift).
 ///
@@ -53,9 +54,13 @@ class MemoryRepository extends ChangeNotifier {
           title: row.title,
           description: row.description,
           date: row.memoryDate,
-          photoUrls: [for (final photo in photosByMemory[row.id] ?? const []) photo.localPath],
+          photoUrls: [
+            for (final photo in photosByMemory[row.id] ?? const [])
+              photo.localPath,
+          ],
           photoDisplayModes: [
-            for (final photo in photosByMemory[row.id] ?? const []) PhotoDisplayMode.fromName(photo.displayMode),
+            for (final photo in photosByMemory[row.id] ?? const [])
+              PhotoDisplayMode.fromName(photo.displayMode),
           ],
           tags: tagsByMemory[row.id] ?? const [],
           isFavorite: row.isFavorite,
@@ -65,9 +70,11 @@ class MemoryRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Memory> onDate(DateTime date) => _memories.where((m) => _isSameDay(m.date, date)).toList();
+  List<Memory> onDate(DateTime date) =>
+      _memories.where((m) => _isSameDay(m.date, date)).toList();
 
-  bool hasMemoriesOn(DateTime date) => _memories.any((m) => _isSameDay(m.date, date));
+  bool hasMemoriesOn(DateTime date) =>
+      _memories.any((m) => _isSameDay(m.date, date));
 
   List<Memory> search(String query) {
     if (query.trim().isEmpty) return const [];
@@ -87,7 +94,11 @@ class MemoryRepository extends ChangeNotifier {
 
   int get totalPhotos => _memories.fold(0, (sum, m) => sum + m.photoCount);
 
-  int get totalTags => _memories.expand((m) => m.tags).map((t) => t.toLowerCase()).toSet().length;
+  int get totalTags => _memories
+      .expand((m) => m.tags)
+      .map((t) => t.toLowerCase())
+      .toSet()
+      .length;
 
   int? get firstMemoryYear {
     if (_memories.isEmpty) return null;
@@ -117,7 +128,11 @@ class MemoryRepository extends ChangeNotifier {
         ),
       );
 
-      await _insertPhotos(memoryId, photoPaths, displayModes: photoDisplayModes);
+      await _insertPhotos(
+        memoryId,
+        photoPaths,
+        displayModes: photoDisplayModes,
+      );
       await _linkTags(memoryId, tags);
       return memoryId;
     });
@@ -147,7 +162,9 @@ class MemoryRepository extends ChangeNotifier {
           title: Value(title),
           description: Value(description),
           memoryDate: Value(date),
-          isFavorite: isFavorite == null ? const Value.absent() : Value(isFavorite),
+          isFavorite: isFavorite == null
+              ? const Value.absent()
+              : Value(isFavorite),
           updatedAt: Value(DateTime.now()),
         ),
       );
@@ -163,7 +180,12 @@ class MemoryRepository extends ChangeNotifier {
       }
 
       await _db.memoryPhotosDao.deletePhotosForMemory(id);
-      await _insertPhotos(id, photoPaths, reuseThumbnails: existingByPath, displayModes: photoDisplayModes);
+      await _insertPhotos(
+        id,
+        photoPaths,
+        reuseThumbnails: existingByPath,
+        displayModes: photoDisplayModes,
+      );
       await _linkTags(id, tags);
     });
 
@@ -209,7 +231,8 @@ class MemoryRepository extends ChangeNotifier {
     final now = DateTime.now();
     for (final def in demoMemoryDefs) {
       final photoPaths = [
-        for (final asset in def.photoAssets) await ImageStorageService.copyAssetIntoAppStorage(asset),
+        for (final asset in def.photoAssets)
+          await ImageStorageService.copyAssetIntoAppStorage(asset),
       ];
       await create(
         title: def.title,
@@ -248,8 +271,12 @@ class MemoryRepository extends ChangeNotifier {
     int? coverPhotoId;
     for (var i = 0; i < photoPaths.length; i++) {
       final path = photoPaths[i];
-      final thumbnailPath = reuseThumbnails?[path]?.thumbnailPath ?? await ImageStorageService.thumbnailFor(path);
-      final mode = (displayModes != null && i < displayModes.length) ? displayModes[i] : PhotoDisplayMode.fill;
+      final thumbnailPath =
+          reuseThumbnails?[path]?.thumbnailPath ??
+          await ImageStorageService.thumbnailFor(path);
+      final mode = (displayModes != null && i < displayModes.length)
+          ? displayModes[i]
+          : PhotoDisplayMode.fill;
       final photoId = await _db.memoryPhotosDao.insertPhoto(
         MemoryPhotosCompanion.insert(
           memoryId: memoryId,

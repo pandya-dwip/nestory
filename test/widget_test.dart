@@ -5,7 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestory/main.dart';
 
 void main() {
-  testWidgets('Nestory boots to the splash screen', (WidgetTester tester) async {
+  testWidgets('Nestory boots to the splash screen', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const NestoryApp());
     await tester.pump();
 

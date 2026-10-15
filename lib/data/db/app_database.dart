@@ -27,9 +27,15 @@ part 'app_database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase._() : super(_openConnection());
 
+  AppDatabase.forTesting(super.executor);
+
   static AppDatabase? _instance;
 
   static AppDatabase instance() => _instance ??= AppDatabase._();
+
+  static void setInstanceForTesting(AppDatabase? db) {
+    _instance = db;
+  }
 
   /// Closes the current connection and drops the cached instance, so the
   /// next [instance] call reopens fresh — used by Restore after the backup
@@ -49,20 +55,20 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) async {
-          await m.createAll();
-          await _createIndexes(m);
-        },
-        onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            await m.addColumn(memoryPhotos, memoryPhotos.displayMode);
-          }
-        },
-        beforeOpen: (details) async {
-          // MemoryPhotos/MemoryTags cascade deletes rely on this.
-          await customStatement('PRAGMA foreign_keys = ON');
-        },
-      );
+    onCreate: (m) async {
+      await m.createAll();
+      await _createIndexes(m);
+    },
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(memoryPhotos, memoryPhotos.displayMode);
+      }
+    },
+    beforeOpen: (details) async {
+      // MemoryPhotos/MemoryTags cascade deletes rely on this.
+      await customStatement('PRAGMA foreign_keys = ON');
+    },
+  );
 
   static Future<void> _createIndexes(Migrator m) async {
     await m.database.customStatement(

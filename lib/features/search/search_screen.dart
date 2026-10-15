@@ -43,18 +43,32 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.gutter, AppSpacing.unit, AppSpacing.gutter, AppSpacing.stackSm),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.gutter,
+                AppSpacing.unit,
+                AppSpacing.gutter,
+                AppSpacing.stackSm,
+              ),
               child: Row(
                 children: [
-                  GlassIconButton(icon: Icons.arrow_back, onPressed: () => Navigator.of(context).pop()),
+                  GlassIconButton(
+                    icon: Icons.arrow_back,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                   const SizedBox(width: AppSpacing.stackSm),
                   Expanded(
                     child: GlassContainer(
                       active: true,
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackMd),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.stackMd,
+                      ),
                       child: Row(
                         children: [
-                          Icon(Icons.search, color: colors.onSurfaceVariant, size: 20),
+                          Icon(
+                            Icons.search,
+                            color: colors.onSurfaceVariant,
+                            size: 20,
+                          ),
                           const SizedBox(width: AppSpacing.stackSm),
                           Expanded(
                             child: TextField(
@@ -66,7 +80,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                 isDense: true,
                                 border: InputBorder.none,
                                 hintText: 'Search memories...',
-                                hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colors.onSurface.withValues(alpha: 0.3)),
+                                hintStyle: Theme.of(context).textTheme.bodyLarge
+                                    ?.copyWith(
+                                      color: colors.onSurface.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                    ),
                               ),
                             ),
                           ),
@@ -74,8 +93,14 @@ class _SearchScreenState extends State<SearchScreen> {
                             GestureDetector(
                               onTap: _controller.clear,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackMd),
-                                child: Icon(Icons.close, color: colors.onSurfaceVariant, size: 18),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: AppSpacing.stackMd,
+                                ),
+                                child: Icon(
+                                  Icons.close,
+                                  color: colors.onSurfaceVariant,
+                                  size: 18,
+                                ),
                               ),
                             ),
                         ],
@@ -90,7 +115,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 listenable: MemoryRepository.instance,
                 builder: (context, _) {
                   if (query.trim().isEmpty) {
-                    return const EmptyState('Start typing to search your memories.');
+                    return const EmptyState(
+                      'Start typing to search your memories.',
+                    );
                   }
                   final results = MemoryRepository.instance.search(query);
                   if (results.isEmpty) {
@@ -104,14 +131,17 @@ class _SearchScreenState extends State<SearchScreen> {
                       AppSpacing.stackLg,
                     ),
                     itemCount: results.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.stackMd),
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.stackMd),
                     itemBuilder: (context, index) {
                       final memory = results[index];
                       return MemoryCard(
                         memory: memory,
                         showDate: true,
                         onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => MemoryDetailsScreen(memory: memory)),
+                          MaterialPageRoute(
+                            builder: (_) => MemoryDetailsScreen(memory: memory),
+                          ),
                         ),
                       );
                     },

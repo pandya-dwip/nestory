@@ -13,15 +13,26 @@ import '../../shared/widgets/tag_chip.dart';
 import 'create_edit_memory_screen.dart';
 
 const _monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 /// Shows [initialMemory] and stays live-synced to the repository by id, so
 /// an edit made on the Create/Edit screen (or a favorite toggle here)
 /// reflects immediately without needing to re-navigate.
 class MemoryDetailsScreen extends StatelessWidget {
-  const MemoryDetailsScreen({super.key, required Memory memory}) : initialMemory = memory;
+  const MemoryDetailsScreen({super.key, required Memory memory})
+    : initialMemory = memory;
 
   final Memory initialMemory;
 
@@ -32,7 +43,8 @@ class MemoryDetailsScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: MemoryRepository.instance,
       builder: (context, _) {
-        final memory = MemoryRepository.instance.byId(initialMemory.id) ?? initialMemory;
+        final memory =
+            MemoryRepository.instance.byId(initialMemory.id) ?? initialMemory;
 
         return Scaffold(
           body: Stack(
@@ -42,15 +54,24 @@ class MemoryDetailsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.unit),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.gutter,
+                        vertical: AppSpacing.unit,
+                      ),
                       child: Row(
                         children: [
-                          GlassIconButton(icon: Icons.arrow_back, onPressed: () => Navigator.of(context).pop()),
+                          GlassIconButton(
+                            icon: Icons.arrow_back,
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
                           Expanded(
                             child: Text(
                               'NESTORY',
                               textAlign: TextAlign.center,
-                              style: theme.textTheme.headlineMedium?.copyWith(fontSize: 18, letterSpacing: 4),
+                              style: theme.textTheme.headlineMedium?.copyWith(
+                                fontSize: 18,
+                                letterSpacing: 4,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 48),
@@ -58,7 +79,10 @@ class MemoryDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.stackSm),
-                    PhotoCarousel(photoUrls: memory.photoUrls, displayModes: memory.photoDisplayModes),
+                    PhotoCarousel(
+                      photoUrls: memory.photoUrls,
+                      displayModes: memory.photoDisplayModes,
+                    ),
                     Expanded(
                       child: ListView(
                         padding: const EdgeInsets.fromLTRB(
@@ -68,20 +92,32 @@ class MemoryDetailsScreen extends StatelessWidget {
                           140,
                         ),
                         children: [
-                          Text(memory.title, style: theme.textTheme.headlineLarge),
+                          Text(
+                            memory.title,
+                            style: theme.textTheme.headlineLarge,
+                          ),
                           const SizedBox(height: 8),
-                          Text(_formatDate(memory.date), style: theme.textTheme.labelSmall),
+                          Text(
+                            _formatDate(memory.date),
+                            style: theme.textTheme.labelSmall,
+                          ),
                           const SizedBox(height: AppSpacing.stackMd),
                           const SectionTitle('Description', dim: true),
                           const SizedBox(height: AppSpacing.stackSm),
-                          Text(memory.description, style: theme.textTheme.bodyMedium),
+                          Text(
+                            memory.description,
+                            style: theme.textTheme.bodyMedium,
+                          ),
                           const SizedBox(height: AppSpacing.stackMd),
                           const SectionTitle('Tags', dim: true),
                           const SizedBox(height: AppSpacing.stackSm),
                           Wrap(
                             spacing: AppSpacing.stackSm,
                             runSpacing: AppSpacing.stackSm,
-                            children: [for (final tag in memory.tags) TagChip(label: tag)],
+                            children: [
+                              for (final tag in memory.tags)
+                                TagChip(label: tag),
+                            ],
                           ),
                         ],
                       ),
@@ -97,19 +133,28 @@ class MemoryDetailsScreen extends StatelessWidget {
                   child: GlassContainer(
                     active: true,
                     borderRadius: AppRadius.full,
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackLg, vertical: AppSpacing.stackSm),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.stackLg,
+                      vertical: AppSpacing.stackSm,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GlassIconButton(
-                          icon: memory.isFavorite ? Icons.favorite : Icons.favorite_border,
-                          onPressed: () => MemoryRepository.instance.toggleFavorite(memory.id),
+                          icon: memory.isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          onPressed: () => MemoryRepository.instance
+                              .toggleFavorite(memory.id),
                         ),
                         const SizedBox(width: AppSpacing.stackMd),
                         GlassIconButton(
                           icon: Icons.edit_outlined,
                           onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => CreateEditMemoryScreen(memory: memory)),
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  CreateEditMemoryScreen(memory: memory),
+                            ),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.stackMd),
@@ -119,7 +164,8 @@ class MemoryDetailsScreen extends StatelessWidget {
                             final confirmed = await GlassDialog.show(
                               context,
                               title: 'Delete Memory?',
-                              message: 'This will permanently remove "${memory.title}" and its photos.',
+                              message:
+                                  'This will permanently remove "${memory.title}" and its photos.',
                               confirmLabel: 'Delete',
                               destructive: true,
                             );
@@ -141,6 +187,7 @@ class MemoryDetailsScreen extends StatelessWidget {
   }
 
   static String _formatDate(DateTime date) {
-    return '${date.day} ${_monthNames[date.month - 1]} ${date.year}'.toUpperCase();
+    return '${date.day} ${_monthNames[date.month - 1]} ${date.year}'
+        .toUpperCase();
   }
 }

@@ -15,7 +15,10 @@ const _icons = {
 /// "How should this photo be shown?" — Fill / Fit / Landscape / Portrait
 /// priority, in the same glass sheet chrome used elsewhere. Returns the
 /// chosen mode, or null if the user dismisses without choosing.
-Future<PhotoDisplayMode?> showPhotoDisplayModeSheet(BuildContext context, PhotoDisplayMode current) {
+Future<PhotoDisplayMode?> showPhotoDisplayModeSheet(
+  BuildContext context,
+  PhotoDisplayMode current,
+) {
   return GlassBottomSheet.show<PhotoDisplayMode>(
     context,
     title: 'Cover Display',
@@ -27,7 +30,9 @@ Future<PhotoDisplayMode?> showPhotoDisplayModeSheet(BuildContext context, PhotoD
           SettingsTile(
             icon: _icons[mode]!,
             title: mode.label,
-            trailing: mode == current ? const Icon(Icons.check) : const SizedBox.shrink(),
+            trailing: mode == current
+                ? const Icon(Icons.check)
+                : const SizedBox.shrink(),
             onTap: () => Navigator.of(context).pop(mode),
           ),
       ],

@@ -44,7 +44,9 @@ class ImageStorageService {
   /// returns the new local path.
   static Future<String> copyIntoAppStorage(String sourcePath) async {
     final dir = await _photos();
-    final ext = p.extension(sourcePath).isEmpty ? '.jpg' : p.extension(sourcePath);
+    final ext = p.extension(sourcePath).isEmpty
+        ? '.jpg'
+        : p.extension(sourcePath);
     final destPath = p.join(dir.path, _uniqueName(ext));
     await File(sourcePath).copy(destPath);
     return destPath;
@@ -55,7 +57,10 @@ class ImageStorageService {
   /// the app ever touching the network at runtime.
   static Future<String> copyAssetIntoAppStorage(String assetPath) async {
     final data = await rootBundle.load(assetPath);
-    final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    final bytes = data.buffer.asUint8List(
+      data.offsetInBytes,
+      data.lengthInBytes,
+    );
     final dir = await _photos();
     final destPath = p.join(dir.path, _uniqueName(p.extension(assetPath)));
     await File(destPath).writeAsBytes(bytes);
@@ -66,10 +71,17 @@ class ImageStorageService {
   /// [localPath], returning the thumbnail's path.
   static Future<String> thumbnailFor(String localPath) async {
     final sourceBytes = await File(localPath).readAsBytes();
-    final codec = await ui.instantiateImageCodec(sourceBytes, targetWidth: thumbnailWidth);
+    final codec = await ui.instantiateImageCodec(
+      sourceBytes,
+      targetWidth: thumbnailWidth,
+    );
     final frame = await codec.getNextFrame();
-    final pngBytes = await frame.image.toByteData(format: ui.ImageByteFormat.png);
-    if (pngBytes == null) throw StateError('Failed to encode thumbnail for $localPath');
+    final pngBytes = await frame.image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+    if (pngBytes == null) {
+      throw StateError('Failed to encode thumbnail for $localPath');
+    }
 
     final dir = await _thumbs();
     final path = p.join(dir.path, _uniqueName('.png'));
@@ -77,7 +89,8 @@ class ImageStorageService {
     return path;
   }
 
-  static Uint8List _asUint8List(ByteData data) => data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+  static Uint8List _asUint8List(ByteData data) =>
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
   static Future<void> delete(String path) async {
     try {

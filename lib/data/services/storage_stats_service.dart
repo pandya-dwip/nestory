@@ -6,7 +6,11 @@ import 'package:path_provider/path_provider.dart';
 import '../repositories/memory_repository.dart';
 
 class StorageStats {
-  const StorageStats({required this.totalMemories, required this.totalPhotos, required this.totalBytes});
+  const StorageStats({
+    required this.totalMemories,
+    required this.totalPhotos,
+    required this.totalBytes,
+  });
 
   final int totalMemories;
   final int totalPhotos;
@@ -62,7 +66,8 @@ class StorageStatsService {
     if (!await dir.exists()) return 0;
     var total = 0;
     await for (final entity in dir.list()) {
-      if (entity is File && p.basename(entity.path).startsWith('nestory.sqlite')) {
+      if (entity is File &&
+          p.basename(entity.path).startsWith('nestory.sqlite')) {
         total += await entity.length();
       }
     }

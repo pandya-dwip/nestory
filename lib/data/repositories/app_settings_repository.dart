@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../db/app_database.dart';
 
 ThemeMode _themeModeFromString(String value) {
-  return ThemeMode.values.firstWhere((m) => m.name == value, orElse: () => ThemeMode.dark);
+  return ThemeMode.values.firstWhere(
+    (m) => m.name == value,
+    orElse: () => ThemeMode.dark,
+  );
 }
 
 /// App-wide persistent settings — always a single row, backed by

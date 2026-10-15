@@ -36,7 +36,11 @@ class ProfileRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> save({required String name, String? photoPath, required String about}) async {
+  Future<void> save({
+    required String name,
+    String? photoPath,
+    required String about,
+  }) async {
     await _db.profileDao.upsert(name: name, photoPath: photoPath, about: about);
     await reload();
   }

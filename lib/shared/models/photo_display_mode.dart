@@ -16,20 +16,23 @@ enum PhotoDisplayMode {
   portraitPriority;
 
   static PhotoDisplayMode fromName(String? name) {
-    return PhotoDisplayMode.values.firstWhere((m) => m.name == name, orElse: () => PhotoDisplayMode.fill);
+    return PhotoDisplayMode.values.firstWhere(
+      (m) => m.name == name,
+      orElse: () => PhotoDisplayMode.fill,
+    );
   }
 
   BoxFit get boxFit => switch (this) {
-        PhotoDisplayMode.fill => BoxFit.cover,
-        PhotoDisplayMode.fit => BoxFit.contain,
-        PhotoDisplayMode.landscapePriority => BoxFit.fitWidth,
-        PhotoDisplayMode.portraitPriority => BoxFit.fitHeight,
-      };
+    PhotoDisplayMode.fill => BoxFit.cover,
+    PhotoDisplayMode.fit => BoxFit.contain,
+    PhotoDisplayMode.landscapePriority => BoxFit.fitWidth,
+    PhotoDisplayMode.portraitPriority => BoxFit.fitHeight,
+  };
 
   String get label => switch (this) {
-        PhotoDisplayMode.fill => 'Fill (Crop)',
-        PhotoDisplayMode.fit => 'Fit (Show Entire Image)',
-        PhotoDisplayMode.landscapePriority => 'Landscape Priority',
-        PhotoDisplayMode.portraitPriority => 'Portrait Priority',
-      };
+    PhotoDisplayMode.fill => 'Fill (Crop)',
+    PhotoDisplayMode.fit => 'Fit (Show Entire Image)',
+    PhotoDisplayMode.landscapePriority => 'Landscape Priority',
+    PhotoDisplayMode.portraitPriority => 'Portrait Priority',
+  };
 }

@@ -32,7 +32,10 @@ class SettingsTile extends StatelessWidget {
     return InkWell(
       onTap: enabled ? onTap : null,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackMd, vertical: AppSpacing.stackSm + 4),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.stackMd,
+          vertical: AppSpacing.stackSm + 4,
+        ),
         child: Opacity(
           opacity: opacity,
           child: Row(
@@ -46,12 +49,19 @@ class SettingsTile extends StatelessWidget {
                     Text(title, style: theme.textTheme.bodyLarge),
                     if (subtitle != null) ...[
                       const SizedBox(height: 2),
-                      Text(subtitle!, style: theme.textTheme.labelSmall?.copyWith(letterSpacing: 0, fontWeight: FontWeight.w400)),
+                      Text(
+                        subtitle!,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ],
                   ],
                 ),
               ),
-              trailing ?? Icon(Icons.chevron_right, color: colors.outlineVariant),
+              trailing ??
+                  Icon(Icons.chevron_right, color: colors.outlineVariant),
             ],
           ),
         ),
@@ -76,7 +86,12 @@ class SettingsSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackSm),
-          child: Text(title.toUpperCase(), style: Theme.of(context).textTheme.labelSmall?.copyWith(color: colors.outline)),
+          child: Text(
+            title.toUpperCase(),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: colors.outline),
+          ),
         ),
         const SizedBox(height: AppSpacing.unit),
         _SectionPanel(colors: colors, tiles: tiles),
@@ -96,14 +111,21 @@ class _SectionPanel extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: Container(
-        decoration: BoxDecoration(color: colors.surfaceContainer.withValues(alpha: 0.4)),
+        decoration: BoxDecoration(
+          color: colors.surfaceContainer.withValues(alpha: 0.4),
+        ),
         child: Column(
           children: [
             for (var i = 0; i < tiles.length; i++) ...[
               if (i > 0)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackMd),
-                  child: Divider(height: 1, color: colors.glassBorder.withValues(alpha: 0.1)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.stackMd,
+                  ),
+                  child: Divider(
+                    height: 1,
+                    color: colors.glassBorder.withValues(alpha: 0.1),
+                  ),
                 ),
               tiles[i],
             ],

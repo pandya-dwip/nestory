@@ -19,16 +19,28 @@ class TagChip extends StatelessWidget {
     return GlassContainer(
       active: true,
       borderRadius: AppRadius.full,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackMd, vertical: AppSpacing.unit),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.stackMd,
+        vertical: AppSpacing.unit,
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: colors.onSurface)),
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: colors.onSurface),
+          ),
           if (onRemove != null) ...[
             const SizedBox(width: AppSpacing.unit),
             GestureDetector(
               onTap: onRemove,
-              child: Icon(Icons.close, size: 14, color: colors.onSurface.withValues(alpha: 0.4)),
+              child: Icon(
+                Icons.close,
+                size: 14,
+                color: colors.onSurface.withValues(alpha: 0.4),
+              ),
             ),
           ],
         ],

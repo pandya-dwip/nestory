@@ -10,7 +10,8 @@ import 'memories_table.dart';
 class MemoryPhotos extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get memoryId => integer().references(Memories, #id, onDelete: KeyAction.cascade)();
+  IntColumn get memoryId =>
+      integer().references(Memories, #id, onDelete: KeyAction.cascade)();
 
   TextColumn get localPath => text()();
 

@@ -23,8 +23,16 @@ class BackupService {
     final docs = await getApplicationDocumentsDirectory();
     final archive = Archive();
 
-    await _addDirectory(archive, Directory(p.join(docs.path, _photosDirName)), _photosDirName);
-    await _addDirectory(archive, Directory(p.join(docs.path, _thumbsDirName)), _thumbsDirName);
+    await _addDirectory(
+      archive,
+      Directory(p.join(docs.path, _photosDirName)),
+      _photosDirName,
+    );
+    await _addDirectory(
+      archive,
+      Directory(p.join(docs.path, _thumbsDirName)),
+      _thumbsDirName,
+    );
     await _addDatabaseFiles(archive, docs.path);
 
     final bytes = ZipEncoder().encode(archive);
@@ -36,7 +44,9 @@ class BackupService {
   static bool looksLikeValidBackup(Uint8List zipBytes) {
     try {
       final archive = ZipDecoder().decodeBytes(zipBytes);
-      return archive.files.any((f) => f.name == '${_dbEntryPrefix}nestory.sqlite');
+      return archive.files.any(
+        (f) => f.name == '${_dbEntryPrefix}nestory.sqlite',
+      );
     } catch (_) {
       return false;
     }
@@ -65,19 +75,38 @@ class BackupService {
     }
   }
 
-  static Future<void> _addDirectory(Archive archive, Directory dir, String archivePrefix) async {
+  static Future<void> _addDirectory(
+    Archive archive,
+    Directory dir,
+    String archivePrefix,
+  ) async {
     if (!await dir.exists()) return;
     await for (final entity in dir.list()) {
       if (entity is! File) continue;
       final bytes = await entity.readAsBytes();
-      archive.addFile(ArchiveFile('$archivePrefix/${p.basename(entity.path)}', bytes.length, bytes));
+      archive.addFile(
+        ArchiveFile(
+          '$archivePrefix/${p.basename(entity.path)}',
+          bytes.length,
+          bytes,
+        ),
+      );
     }
   }
 
-  static Future<void> _addDatabaseFiles(Archive archive, String docsPath) async {
+  static Future<void> _addDatabaseFiles(
+    Archive archive,
+    String docsPath,
+  ) async {
     for (final file in await _databaseFiles(docsPath)) {
       final bytes = await file.readAsBytes();
-      archive.addFile(ArchiveFile('$_dbEntryPrefix${p.basename(file.path)}', bytes.length, bytes));
+      archive.addFile(
+        ArchiveFile(
+          '$_dbEntryPrefix${p.basename(file.path)}',
+          bytes.length,
+          bytes,
+        ),
+      );
     }
   }
 
@@ -94,7 +123,8 @@ class BackupService {
     if (!await dir.exists()) return const [];
     final files = <File>[];
     await for (final entity in dir.list()) {
-      if (entity is File && p.basename(entity.path).startsWith('nestory.sqlite')) {
+      if (entity is File &&
+          p.basename(entity.path).startsWith('nestory.sqlite')) {
         files.add(entity);
       }
     }

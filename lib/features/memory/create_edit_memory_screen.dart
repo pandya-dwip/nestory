@@ -17,8 +17,18 @@ import 'widgets/image_source_sheet.dart';
 import 'widgets/photo_picker_grid.dart';
 
 const _monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 /// Create a new memory, or edit an existing one when [memory] is passed.
@@ -33,16 +43,22 @@ class CreateEditMemoryScreen extends StatefulWidget {
 }
 
 class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
-  late final _titleController = TextEditingController(text: widget.memory?.title ?? '');
-  late final _descriptionController = TextEditingController(text: widget.memory?.description ?? '');
+  late final _titleController = TextEditingController(
+    text: widget.memory?.title ?? '',
+  );
+  late final _descriptionController = TextEditingController(
+    text: widget.memory?.description ?? '',
+  );
   late final _tagInputController = TextEditingController();
 
   late List<String> _photoUrls = [...?widget.memory?.photoUrls];
   late List<PhotoDisplayMode> _photoDisplayModes = [
-    for (var i = 0; i < _photoUrls.length; i++) widget.memory?.displayModeFor(i) ?? PhotoDisplayMode.fill,
+    for (var i = 0; i < _photoUrls.length; i++)
+      widget.memory?.displayModeFor(i) ?? PhotoDisplayMode.fill,
   ];
   late List<String> _tags = [...?widget.memory?.tags];
-  late DateTime _date = widget.memory?.date ?? widget.initialDate ?? DateTime.now();
+  late DateTime _date =
+      widget.memory?.date ?? widget.initialDate ?? DateTime.now();
 
   bool _addingPhoto = false;
   bool _saving = false;
@@ -63,9 +79,14 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
 
     setState(() => _addingPhoto = true);
     try {
-      final picked = await ImagePicker().pickImage(source: source, imageQuality: 90);
+      final picked = await ImagePicker().pickImage(
+        source: source,
+        imageQuality: 90,
+      );
       if (picked == null) return;
-      final localPath = await ImageStorageService.copyIntoAppStorage(picked.path);
+      final localPath = await ImageStorageService.copyIntoAppStorage(
+        picked.path,
+      );
       if (!mounted) return;
       setState(() {
         _photoUrls = [..._photoUrls, localPath];
@@ -73,7 +94,9 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
       });
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not add that photo.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not add that photo.')),
+        );
       }
     } finally {
       if (mounted) setState(() => _addingPhoto = false);
@@ -131,7 +154,9 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
 
     final title = _titleController.text.trim();
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Give this memory a title.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Give this memory a title.')),
+      );
       return;
     }
 
@@ -160,10 +185,14 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
       }
       if (!mounted) return;
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Memory saved.')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Memory saved.')));
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not save this memory.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not save this memory.')),
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -181,10 +210,17 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.unit),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.gutter,
+                vertical: AppSpacing.unit,
+              ),
               child: Row(
                 children: [
-                  GlassIconButton(icon: Icons.arrow_back, glass: true, onPressed: () => Navigator.of(context).pop()),
+                  GlassIconButton(
+                    icon: Icons.arrow_back,
+                    glass: true,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                   const Spacer(),
                   Material(
                     color: Colors.transparent,
@@ -192,21 +228,39 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
                       borderRadius: BorderRadius.circular(AppRadius.full),
                       onTap: _saving ? null : _save,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackMd, vertical: AppSpacing.stackSm),
-                        decoration: BoxDecoration(color: colors.primary, borderRadius: BorderRadius.circular(AppRadius.full)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.stackMd,
+                          vertical: AppSpacing.stackSm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colors.primary,
+                          borderRadius: BorderRadius.circular(AppRadius.full),
+                        ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('SAVE', style: theme.textTheme.labelSmall?.copyWith(color: colors.onPrimary)),
+                            Text(
+                              'SAVE',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: colors.onPrimary,
+                              ),
+                            ),
                             const SizedBox(width: AppSpacing.unit),
                             if (_saving)
                               SizedBox(
                                 width: 16,
                                 height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: colors.onPrimary),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: colors.onPrimary,
+                                ),
                               )
                             else
-                              Icon(Icons.check, size: 16, color: colors.onPrimary),
+                              Icon(
+                                Icons.check,
+                                size: 16,
+                                color: colors.onPrimary,
+                              ),
                           ],
                         ),
                       ),
@@ -229,7 +283,9 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
                     onAddPhoto: _addPhoto,
                     onRemovePhoto: _removePhoto,
                     onMakeCover: _makeCover,
-                    coverDisplayMode: _photoDisplayModes.isNotEmpty ? _photoDisplayModes[0] : PhotoDisplayMode.fill,
+                    coverDisplayMode: _photoDisplayModes.isNotEmpty
+                        ? _photoDisplayModes[0]
+                        : PhotoDisplayMode.fill,
                     onChangeCoverDisplayMode: _changeCoverDisplayMode,
                     busy: _addingPhoto,
                   ),
@@ -254,12 +310,22 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
                     onTap: _pickDate,
                     child: GlassContainer(
                       active: true,
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.stackMd, vertical: AppSpacing.stackMd),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.stackMd,
+                        vertical: AppSpacing.stackMd,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_formatDate(_date), style: theme.textTheme.bodyLarge),
-                          Icon(Icons.calendar_today_outlined, color: colors.onSurfaceVariant, size: 20),
+                          Text(
+                            _formatDate(_date),
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            color: colors.onSurfaceVariant,
+                            size: 20,
+                          ),
                         ],
                       ),
                     ),
@@ -274,18 +340,23 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
                       runSpacing: AppSpacing.stackSm,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        for (final tag in _tags) TagChip(label: tag, onRemove: () => _removeTag(tag)),
+                        for (final tag in _tags)
+                          TagChip(label: tag, onRemove: () => _removeTag(tag)),
                         SizedBox(
                           width: 120,
                           child: TextField(
                             controller: _tagInputController,
-                            style: theme.textTheme.labelSmall?.copyWith(color: colors.onSurface),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: colors.onSurface,
+                            ),
                             cursorColor: colors.onSurface,
                             decoration: InputDecoration(
                               isDense: true,
                               border: InputBorder.none,
                               hintText: 'Add tag...',
-                              hintStyle: theme.textTheme.labelSmall?.copyWith(color: colors.onSurface.withValues(alpha: 0.3)),
+                              hintStyle: theme.textTheme.labelSmall?.copyWith(
+                                color: colors.onSurface.withValues(alpha: 0.3),
+                              ),
                             ),
                             onSubmitted: _addTag,
                           ),
@@ -302,5 +373,6 @@ class _CreateEditMemoryScreenState extends State<CreateEditMemoryScreen> {
     );
   }
 
-  static String _formatDate(DateTime date) => '${_monthNames[date.month - 1]} ${date.day}, ${date.year}';
+  static String _formatDate(DateTime date) =>
+      '${_monthNames[date.month - 1]} ${date.day}, ${date.year}';
 }

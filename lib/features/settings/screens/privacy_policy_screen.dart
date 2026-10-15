@@ -57,15 +57,24 @@ class PrivacyPolicyScreen extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.unit),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.gutter,
+                vertical: AppSpacing.unit,
+              ),
               child: Row(
                 children: [
-                  GlassIconButton(icon: Icons.arrow_back, onPressed: () => Navigator.of(context).pop()),
+                  GlassIconButton(
+                    icon: Icons.arrow_back,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                   Expanded(
                     child: Text(
                       'PRIVACY POLICY',
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.headlineMedium?.copyWith(fontSize: 16, letterSpacing: 3),
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontSize: 16,
+                        letterSpacing: 3,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 48),
@@ -74,7 +83,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter, vertical: AppSpacing.stackMd),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.gutter,
+                  vertical: AppSpacing.stackMd,
+                ),
                 children: [
                   const SectionTitle('Your data, your device', dim: true),
                   const SizedBox(height: AppSpacing.stackSm),
@@ -117,7 +129,12 @@ class _PolicyRow extends StatelessWidget {
             children: [
               Text(point.title, style: theme.textTheme.bodyLarge),
               const SizedBox(height: 4),
-              Text(point.body, style: theme.textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant)),
+              Text(
+                point.body,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colors.onSurfaceVariant,
+                ),
+              ),
             ],
           ),
         ),

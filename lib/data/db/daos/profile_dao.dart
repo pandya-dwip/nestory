@@ -14,14 +14,22 @@ class ProfileDao extends DatabaseAccessor<AppDatabase> with _$ProfileDaoMixin {
   ProfileDao(super.db);
 
   Future<ProfileEntity?> get() {
-    return (select(profile)..where((p) => p.id.equals(_singletonId))).getSingleOrNull();
+    return (select(
+      profile,
+    )..where((p) => p.id.equals(_singletonId))).getSingleOrNull();
   }
 
   Stream<ProfileEntity?> watch() {
-    return (select(profile)..where((p) => p.id.equals(_singletonId))).watchSingleOrNull();
+    return (select(
+      profile,
+    )..where((p) => p.id.equals(_singletonId))).watchSingleOrNull();
   }
 
-  Future<void> upsert({required String name, String? photoPath, required String about}) async {
+  Future<void> upsert({
+    required String name,
+    String? photoPath,
+    required String about,
+  }) async {
     final existing = await get();
     await into(profile).insertOnConflictUpdate(
       ProfileEntity(

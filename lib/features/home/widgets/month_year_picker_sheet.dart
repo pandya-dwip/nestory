@@ -5,8 +5,18 @@ import '../../../shared/widgets/glass_bottom_sheet.dart';
 import '../../settings/widgets/settings_tile.dart';
 
 const monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 const _estimatedRowHeight = 64.0;
@@ -19,14 +29,19 @@ Future<int?> showMonthPickerSheet(BuildContext context, int currentMonth) {
     heightFactor: 0.6,
     builder: (context) => ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
-      controller: ScrollController(initialScrollOffset: (currentMonth - 3).clamp(0, 12) * _estimatedRowHeight),
+      controller: ScrollController(
+        initialScrollOffset:
+            (currentMonth - 3).clamp(0, 12) * _estimatedRowHeight,
+      ),
       itemCount: 12,
       itemBuilder: (context, index) {
         final month = index + 1;
         return SettingsTile(
           icon: Icons.calendar_today_outlined,
           title: monthNames[index],
-          trailing: month == currentMonth ? const Icon(Icons.check) : const SizedBox.shrink(),
+          trailing: month == currentMonth
+              ? const Icon(Icons.check)
+              : const SizedBox.shrink(),
           onTap: () => Navigator.of(context).pop(month),
         );
       },
@@ -52,7 +67,12 @@ Future<int?> showYearPickerSheet(
     builder: (context) => ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
       controller: ScrollController(
-        initialScrollOffset: ((selectedIndex < 0 ? 0 : selectedIndex) - 3).clamp(0, years.length) * _estimatedRowHeight,
+        initialScrollOffset:
+            ((selectedIndex < 0 ? 0 : selectedIndex) - 3).clamp(
+              0,
+              years.length,
+            ) *
+            _estimatedRowHeight,
       ),
       itemCount: years.length,
       itemBuilder: (context, index) {
@@ -60,7 +80,9 @@ Future<int?> showYearPickerSheet(
         return SettingsTile(
           icon: Icons.calendar_month_outlined,
           title: '$year',
-          trailing: year == currentYear ? const Icon(Icons.check) : const SizedBox.shrink(),
+          trailing: year == currentYear
+              ? const Icon(Icons.check)
+              : const SizedBox.shrink(),
           onTap: () => Navigator.of(context).pop(year),
         );
       },

@@ -9,7 +9,12 @@ import '../../core/theme/app_colors.dart';
 /// local file path (the common case — every stored memory photo lives in
 /// app storage) or, if [url] is an http(s) URL, a network image.
 class AppPhoto extends StatelessWidget {
-  const AppPhoto({super.key, required this.url, this.fit = BoxFit.cover, this.cacheWidth});
+  const AppPhoto({
+    super.key,
+    required this.url,
+    this.fit = BoxFit.cover,
+    this.cacheWidth,
+  });
 
   final String url;
   final BoxFit fit;
@@ -18,7 +23,8 @@ class AppPhoto extends StatelessWidget {
   /// spots (like the calendar) that render many small copies at once.
   final int? cacheWidth;
 
-  bool get _isNetwork => url.startsWith('http://') || url.startsWith('https://');
+  bool get _isNetwork =>
+      url.startsWith('http://') || url.startsWith('https://');
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +35,10 @@ class AppPhoto extends StatelessWidget {
         url,
         fit: fit,
         cacheWidth: cacheWidth,
-        loadingBuilder: (context, child, progress) => progress == null ? child : _placeholder(colors, loading: true),
-        errorBuilder: (context, error, stack) => _placeholder(colors, loading: false),
+        loadingBuilder: (context, child, progress) =>
+            progress == null ? child : _placeholder(colors, loading: true),
+        errorBuilder: (context, error, stack) =>
+            _placeholder(colors, loading: false),
       );
     }
 
@@ -38,7 +46,8 @@ class AppPhoto extends StatelessWidget {
       File(url),
       fit: fit,
       cacheWidth: cacheWidth,
-      errorBuilder: (context, error, stack) => _placeholder(colors, loading: false),
+      errorBuilder: (context, error, stack) =>
+          _placeholder(colors, loading: false),
     );
   }
 

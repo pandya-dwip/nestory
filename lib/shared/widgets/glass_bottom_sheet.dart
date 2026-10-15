@@ -55,15 +55,25 @@ class GlassBottomSheet extends StatelessWidget {
     return SizedBox(
       height: MediaQuery.of(context).size.height * heightFactor,
       child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppRadius.lg),
+        ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
           child: Container(
             decoration: BoxDecoration(
               color: colors.surface.withValues(alpha: 0.55),
-              border: Border(top: BorderSide(color: colors.glassBorder.withValues(alpha: 0.22))),
+              border: Border(
+                top: BorderSide(
+                  color: colors.glassBorder.withValues(alpha: 0.22),
+                ),
+              ),
               boxShadow: [
-                BoxShadow(color: colors.onSurface.withValues(alpha: 0.08), blurRadius: 0, offset: const Offset(0, 1)),
+                BoxShadow(
+                  color: colors.onSurface.withValues(alpha: 0.08),
+                  blurRadius: 0,
+                  offset: const Offset(0, 1),
+                ),
               ],
             ),
             child: SafeArea(
@@ -73,7 +83,10 @@ class GlassBottomSheet extends StatelessWidget {
                 children: [
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.stackSm, bottom: AppSpacing.unit),
+                      padding: const EdgeInsets.only(
+                        top: AppSpacing.stackSm,
+                        bottom: AppSpacing.unit,
+                      ),
                       child: Container(
                         width: 48,
                         height: 5,
@@ -85,7 +98,9 @@ class GlassBottomSheet extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.containerPadding).copyWith(bottom: AppSpacing.stackSm),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.containerPadding,
+                    ).copyWith(bottom: AppSpacing.stackSm),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -93,15 +108,25 @@ class GlassBottomSheet extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(title, style: theme.textTheme.headlineMedium),
+                              Text(
+                                title,
+                                style: theme.textTheme.headlineMedium,
+                              ),
                               if (subtitle != null) ...[
                                 const SizedBox(height: 4),
-                                Text(subtitle!, style: theme.textTheme.bodyMedium),
+                                Text(
+                                  subtitle!,
+                                  style: theme.textTheme.bodyMedium,
+                                ),
                               ],
                             ],
                           ),
                         ),
-                        GlassIconButton(icon: Icons.close, onPressed: onClose, size: 40),
+                        GlassIconButton(
+                          icon: Icons.close,
+                          onPressed: onClose,
+                          size: 40,
+                        ),
                       ],
                     ),
                   ),

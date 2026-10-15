@@ -9,20 +9,28 @@ import 'app_photo.dart';
 /// falloff on neighboring slides and dot page indicators. Each slide is
 /// fitted per its own stored [PhotoDisplayMode].
 class PhotoCarousel extends StatefulWidget {
-  const PhotoCarousel({super.key, required this.photoUrls, this.displayModes = const [], this.height = 420});
+  const PhotoCarousel({
+    super.key,
+    required this.photoUrls,
+    this.displayModes = const [],
+    this.height = 420,
+  });
 
   final List<String> photoUrls;
   final List<PhotoDisplayMode> displayModes;
   final double height;
 
-  PhotoDisplayMode _modeFor(int index) => index < displayModes.length ? displayModes[index] : PhotoDisplayMode.fill;
+  PhotoDisplayMode _modeFor(int index) =>
+      index < displayModes.length ? displayModes[index] : PhotoDisplayMode.fill;
 
   @override
   State<PhotoCarousel> createState() => _PhotoCarouselState();
 }
 
 class _PhotoCarouselState extends State<PhotoCarousel> {
-  late final PageController _controller = PageController(viewportFraction: 0.82);
+  late final PageController _controller = PageController(
+    viewportFraction: 0.82,
+  );
   double _page = 0;
 
   @override
@@ -68,15 +76,27 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
                             fit: StackFit.expand,
                             children: [
                               DecoratedBox(
-                                decoration: BoxDecoration(border: Border.all(color: colors.glassBorder.withValues(alpha: 0.1))),
-                                child: AppPhoto(url: widget.photoUrls[index], fit: widget._modeFor(index).boxFit),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: colors.glassBorder.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                  ),
+                                ),
+                                child: AppPhoto(
+                                  url: widget.photoUrls[index],
+                                  fit: widget._modeFor(index).boxFit,
+                                ),
                               ),
                               DecoratedBox(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     begin: Alignment.bottomCenter,
                                     end: Alignment.topCenter,
-                                    colors: [Colors.black.withValues(alpha: 0.55), Colors.transparent],
+                                    colors: [
+                                      Colors.black.withValues(alpha: 0.55),
+                                      Colors.transparent,
+                                    ],
                                   ),
                                 ),
                               ),

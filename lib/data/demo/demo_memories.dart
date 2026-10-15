@@ -37,15 +37,20 @@ const _assetDir = 'assets/demo_photos';
 final demoMemoryDefs = <DemoMemoryDef>[
   DemoMemoryDef(
     title: 'Movie Night',
-    description: 'Popcorn, dimmed lights, and a film none of us could agree on beforehand — worth it anyway.',
+    description:
+        'Popcorn, dimmed lights, and a film none of us could agree on beforehand — worth it anyway.',
     monthsAgo: 0,
     day: 3,
     tags: const ['Friends', 'Evening'],
-    photoAssets: const ['$_assetDir/nestory_movie-1.jpg', '$_assetDir/nestory_movie-2.jpg'],
+    photoAssets: const [
+      '$_assetDir/nestory_movie-1.jpg',
+      '$_assetDir/nestory_movie-2.jpg',
+    ],
   ),
   DemoMemoryDef(
     title: 'Goa Trip',
-    description: 'Salt air, late sunsets, and a week that felt twice as long in the best way.',
+    description:
+        'Salt air, late sunsets, and a week that felt twice as long in the best way.',
     monthsAgo: 1,
     day: 14,
     tags: const ['Travel', 'Beach', 'Friends'],
@@ -60,7 +65,8 @@ final demoMemoryDefs = <DemoMemoryDef>[
   ),
   DemoMemoryDef(
     title: 'Birthday Celebration',
-    description: 'Too much cake, a slightly off-key round of singing, and everyone I love in one room.',
+    description:
+        'Too much cake, a slightly off-key round of singing, and everyone I love in one room.',
     monthsAgo: 2,
     day: 21,
     tags: const ['Family', 'Celebration'],
@@ -74,7 +80,8 @@ final demoMemoryDefs = <DemoMemoryDef>[
   ),
   DemoMemoryDef(
     title: 'College Farewell',
-    description: 'Four years condensed into one long afternoon of photos, signatures, and promises to keep in touch.',
+    description:
+        'Four years condensed into one long afternoon of photos, signatures, and promises to keep in touch.',
     monthsAgo: 3,
     day: 9,
     tags: const ['Friends', 'Milestone'],
@@ -87,15 +94,20 @@ final demoMemoryDefs = <DemoMemoryDef>[
   ),
   DemoMemoryDef(
     title: 'First Salary',
-    description: 'Framed the payslip, then immediately spent too much of it on dinner for the people who got me here.',
+    description:
+        'Framed the payslip, then immediately spent too much of it on dinner for the people who got me here.',
     monthsAgo: 4,
     day: 1,
     tags: const ['Milestone', 'Career'],
-    photoAssets: const ['$_assetDir/nestory_salary-1.jpg', '$_assetDir/nestory_salary-2.jpg'],
+    photoAssets: const [
+      '$_assetDir/nestory_salary-1.jpg',
+      '$_assetDir/nestory_salary-2.jpg',
+    ],
   ),
   DemoMemoryDef(
     title: 'Family Dinner',
-    description: 'No occasion, just a Sunday table that somehow fit six conversations at once.',
+    description:
+        'No occasion, just a Sunday table that somehow fit six conversations at once.',
     monthsAgo: 0,
     day: 10,
     tags: const ['Family', 'Food'],
@@ -107,7 +119,8 @@ final demoMemoryDefs = <DemoMemoryDef>[
   ),
   DemoMemoryDef(
     title: 'Trekking Adventure',
-    description: 'Twelve kilometers, one wrong turn, and a summit view that made the wrong turn worth it.',
+    description:
+        'Twelve kilometers, one wrong turn, and a summit view that made the wrong turn worth it.',
     monthsAgo: 5,
     day: 17,
     tags: const ['Adventure', 'Mountains'],

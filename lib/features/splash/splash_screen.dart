@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/app_settings_repository.dart';
+import '../../data/repositories/calendar_event_repository.dart';
 import '../../data/repositories/memory_repository.dart';
 import '../../data/repositories/profile_repository.dart';
+import '../../data/services/calendar_sync_service.dart';
+import '../../data/services/google_auth_service.dart';
 import '../home/home_screen.dart';
 
 /// First screen shown on launch. Plays a short brand entrance while the
@@ -17,7 +20,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1400),
@@ -28,7 +32,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     curve: const Interval(0.0, 0.55, curve: Curves.easeOut),
   );
   late final _wordmarkScale = Tween<double>(begin: 0.92, end: 1.0).animate(
-    CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.55, curve: Curves.easeOutCubic)),
+    CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.55, curve: Curves.easeOutCubic),
+    ),
   );
   late final _glowFade = CurvedAnimation(
     parent: _controller,
@@ -55,7 +62,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       MemoryRepository.instance.init(),
       ProfileRepository.instance.init(),
       AppSettingsRepository.instance.init(),
+      CalendarEventRepository.instance.init(),
+      GoogleAuthService.instance.init(),
     ]);
+    CalendarSyncService.instance.init();
+    CalendarSyncService.instance.triggerOutboxDrain();
     // Keep the entrance on screen for a minimum stretch so it always reads
     // as an intentional brand moment, never a flicker on fast devices.
     const minimumDisplay = Duration(milliseconds: 1700);
@@ -65,7 +76,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 700),
-        pageBuilder: (context, animation, _) => FadeTransition(opacity: animation, child: const HomeScreen()),
+        pageBuilder: (context, animation, _) =>
+            FadeTransition(opacity: animation, child: const HomeScreen()),
       ),
     );
   }
@@ -115,7 +127,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         scale: _wordmarkScale,
                         child: Text(
                           'NESTORY',
-                          style: theme.textTheme.displayLarge?.copyWith(fontSize: 40, letterSpacing: 10),
+                          style: theme.textTheme.displayLarge?.copyWith(
+                            fontSize: 40,
+                            letterSpacing: 10,
+                          ),
                         ),
                       ),
                     ),
@@ -123,7 +138,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     SizedBox(
                       width: 64 * _ruleWidth.value,
                       height: 1,
-                      child: ColoredBox(color: colors.outline.withValues(alpha: 0.4)),
+                      child: ColoredBox(
+                        color: colors.outline.withValues(alpha: 0.4),
+                      ),
                     ),
                     const SizedBox(height: 18),
                     FadeTransition(

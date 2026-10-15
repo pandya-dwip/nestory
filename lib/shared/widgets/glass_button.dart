@@ -35,8 +35,12 @@ class GlassButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: foregroundColor ?? (variant == GlassButtonVariant.primary ? colors.onPrimary : colors.onSurface),
-        );
+      color:
+          foregroundColor ??
+          (variant == GlassButtonVariant.primary
+              ? colors.onPrimary
+              : colors.onSurface),
+    );
 
     final content = Row(
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
@@ -50,12 +54,18 @@ class GlassButton extends StatelessWidget {
       ],
     );
 
-    final padding = const EdgeInsets.symmetric(horizontal: AppSpacing.stackMd, vertical: AppSpacing.stackSm + 4);
+    final padding = const EdgeInsets.symmetric(
+      horizontal: AppSpacing.stackMd,
+      vertical: AppSpacing.stackSm + 4,
+    );
 
     final button = variant == GlassButtonVariant.primary
         ? Container(
             padding: padding,
-            decoration: BoxDecoration(color: colors.primary, borderRadius: BorderRadius.circular(AppRadius.full)),
+            decoration: BoxDecoration(
+              color: colors.primary,
+              borderRadius: BorderRadius.circular(AppRadius.full),
+            ),
             child: content,
           )
         : GlassContainer(

@@ -27,10 +27,17 @@ class ProfileAvatar extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [colors.onSurface.withValues(alpha: 0.2), Colors.transparent],
+            colors: [
+              colors.onSurface.withValues(alpha: 0.2),
+              Colors.transparent,
+            ],
           ),
           boxShadow: [
-            BoxShadow(color: colors.onSurface.withValues(alpha: 0.08), blurRadius: 40, spreadRadius: 8),
+            BoxShadow(
+              color: colors.onSurface.withValues(alpha: 0.08),
+              blurRadius: 40,
+              spreadRadius: 8,
+            ),
           ],
         ),
         child: ClipOval(
@@ -38,7 +45,11 @@ class ProfileAvatar extends StatelessWidget {
             color: colors.surfaceDim,
             child: photoUrl != null
                 ? AppPhoto(url: photoUrl!)
-                : Icon(Icons.person_outline, size: size * 0.45, color: colors.onSurfaceVariant),
+                : Icon(
+                    Icons.person_outline,
+                    size: size * 0.45,
+                    color: colors.onSurfaceVariant,
+                  ),
           ),
         ),
       ),

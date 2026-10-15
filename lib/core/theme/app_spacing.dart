@@ -7,5 +7,6 @@ class AppSpacing {
   static const double stackMd = 24;
   static const double stackLg = 48;
   static const double gutter = 24;
-  static const double containerPadding = 24; // scaled down from 40 desktop for phone width
+  static const double containerPadding =
+      24; // scaled down from 40 desktop for phone width
 }

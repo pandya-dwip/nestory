@@ -39,9 +39,14 @@ class GlassContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final effectiveBlur = blur ?? (active ? AppGlass.blurHigh : AppGlass.blurLow);
-    final effectiveFill = fillOpacity ?? (active ? AppGlass.fillOpacityHigh : AppGlass.fillOpacityLow);
-    final effectiveBorderOpacity = borderOpacity ?? (active ? AppGlass.borderOpacityHigh : AppGlass.borderOpacityLow);
+    final effectiveBlur =
+        blur ?? (active ? AppGlass.blurHigh : AppGlass.blurLow);
+    final effectiveFill =
+        fillOpacity ??
+        (active ? AppGlass.fillOpacityHigh : AppGlass.fillOpacityLow);
+    final effectiveBorderOpacity =
+        borderOpacity ??
+        (active ? AppGlass.borderOpacityHigh : AppGlass.borderOpacityLow);
     final effectiveBorderColor = borderColor ?? colors.glassBorder;
 
     return ClipRRect(
@@ -55,7 +60,9 @@ class GlassContainer extends StatelessWidget {
             color: colors.onSurface.withValues(alpha: effectiveFill),
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
-              color: effectiveBorderColor.withValues(alpha: effectiveBorderOpacity),
+              color: effectiveBorderColor.withValues(
+                alpha: effectiveBorderOpacity,
+              ),
               width: 1,
             ),
             boxShadow: active

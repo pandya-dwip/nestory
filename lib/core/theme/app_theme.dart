@@ -11,7 +11,10 @@ class AppTheme {
   static ThemeData light() => _build(NestoryColors.light, Brightness.light);
 
   static ThemeData _build(NestoryColors colors, Brightness brightness) {
-    final textTheme = AppTypography.textTheme(colors.onSurface, colors.onSurfaceVariant);
+    final textTheme = AppTypography.textTheme(
+      colors.onSurface,
+      colors.onSurfaceVariant,
+    );
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
