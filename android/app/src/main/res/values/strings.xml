@@ -9,5 +9,7 @@
     <string name="add_memory">Add memory</string>
     <string name="prev_month">Previous month</string>
     <string name="next_month">Next month</string>
+    <string name="expand_panel">Expand agenda</string>
+    <string name="collapse_panel">Collapse agenda</string>
     <string name="today_memory">Memory from today</string>
 </resources>

@@ -6,13 +6,22 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import com.nestory.app.MainActivity
 import com.nestory.app.R
 import org.json.JSONObject
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -35,6 +44,16 @@ class NestoryWidgetProvider : AppWidgetProvider() {
                         .putInt("selected_year_$appWidgetId", year)
                         .putInt("selected_month_$appWidgetId", month)
                         .putInt("selected_day_$appWidgetId", day)
+                        .apply()
+                    val mgr = AppWidgetManager.getInstance(context) ?: return
+                    updateWidget(context, mgr, appWidgetId, null)
+                }
+            }
+            ACTION_TOGGLE_PANEL -> {
+                if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    val currentExpanded = prefs.getBoolean("is_panel_expanded_$appWidgetId", false)
+                    prefs.edit()
+                        .putBoolean("is_panel_expanded_$appWidgetId", !currentExpanded)
                         .apply()
                     val mgr = AppWidgetManager.getInstance(context) ?: return
                     updateWidget(context, mgr, appWidgetId, null)
@@ -118,6 +137,7 @@ class NestoryWidgetProvider : AppWidgetProvider() {
         const val KEY_SNAPSHOT = "widget_snapshot_v1"
 
         const val ACTION_SELECT_DATE = "com.nestory.app.widget.ACTION_SELECT_DATE"
+        const val ACTION_TOGGLE_PANEL = "com.nestory.app.widget.ACTION_TOGGLE_PANEL"
         const val ACTION_PREV_MONTH = "com.nestory.app.widget.ACTION_PREV_MONTH"
         const val ACTION_NEXT_MONTH = "com.nestory.app.widget.ACTION_NEXT_MONTH"
         const val ACTION_RESET_TODAY = "com.nestory.app.widget.ACTION_RESET_TODAY"
@@ -127,8 +147,13 @@ class NestoryWidgetProvider : AppWidgetProvider() {
         const val EXTRA_DAY = "extra_day"
 
         private val MONTH_NAMES = arrayOf(
-            "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-            "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        )
+
+        private val MONTH_ABBRS = arrayOf(
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         )
 
         fun updateAllWidgets(context: Context) {
@@ -146,22 +171,23 @@ class NestoryWidgetProvider : AppWidgetProvider() {
             appWidgetId: Int,
             options: Bundle?
         ) {
-            val views = RemoteViews(context.packageName, R.layout.widget_layout)
-            val opts = options ?: appWidgetManager.getAppWidgetOptions(appWidgetId)
-            val minWidth = opts?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) ?: 0
-            val isCompact = minWidth in 1..150
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val isPanelExpanded = prefs.getBoolean("is_panel_expanded_$appWidgetId", false)
 
-            // Responsive layout: hide mini-calendar only if exceptionally narrow
-            if (isCompact) {
-                views.setViewVisibility(R.id.widget_calendar_container, View.GONE)
-                views.setViewVisibility(R.id.widget_divider, View.GONE)
-            } else {
-                views.setViewVisibility(R.id.widget_calendar_container, View.VISIBLE)
+            val views = RemoteViews(context.packageName, R.layout.widget_layout)
+
+            // Dynamic panel expand/collapse handling
+            if (isPanelExpanded) {
                 views.setViewVisibility(R.id.widget_divider, View.VISIBLE)
+                views.setViewVisibility(R.id.widget_agenda_container, View.VISIBLE)
+                views.setViewVisibility(R.id.widget_header_actions, View.GONE)
+            } else {
+                views.setViewVisibility(R.id.widget_divider, View.GONE)
+                views.setViewVisibility(R.id.widget_agenda_container, View.GONE)
+                views.setViewVisibility(R.id.widget_header_actions, View.VISIBLE)
             }
 
             // Retrieve snapshot from SharedPreferences
-            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             val snapshotJsonStr = prefs.getString(KEY_SNAPSHOT, null)
             val snapshot = snapshotJsonStr?.let {
                 try {
@@ -188,7 +214,11 @@ class NestoryWidgetProvider : AppWidgetProvider() {
 
             // Month navigation header title
             val monthIndex = (displayedMonth - 1).coerceIn(0, 11)
-            val monthTitle = "${MONTH_NAMES[monthIndex]} $displayedYear"
+            val monthTitle = if (isPanelExpanded) {
+                "${MONTH_ABBRS[monthIndex]} $displayedYear"
+            } else {
+                "${MONTH_NAMES[monthIndex]} $displayedYear"
+            }
             views.setTextViewText(R.id.widget_month_title, monthTitle)
 
             // Month navigation PendingIntents
@@ -196,110 +226,217 @@ class NestoryWidgetProvider : AppWidgetProvider() {
                 action = ACTION_PREV_MONTH
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             }
-            val prevPending = PendingIntent.getBroadcast(
-                context,
-                100 + appWidgetId,
-                prevMonthIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            views.setOnClickPendingIntent(
+                R.id.widget_btn_prev_month,
+                PendingIntent.getBroadcast(context, 100 + appWidgetId, prevMonthIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             )
-            views.setOnClickPendingIntent(R.id.widget_btn_prev_month, prevPending)
 
             val nextMonthIntent = Intent(context, NestoryWidgetProvider::class.java).apply {
                 action = ACTION_NEXT_MONTH
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             }
-            val nextPending = PendingIntent.getBroadcast(
-                context,
-                200 + appWidgetId,
-                nextMonthIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            views.setOnClickPendingIntent(
+                R.id.widget_btn_next_month,
+                PendingIntent.getBroadcast(context, 200 + appWidgetId, nextMonthIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             )
-            views.setOnClickPendingIntent(R.id.widget_btn_next_month, nextPending)
 
             val resetMonthIntent = Intent(context, NestoryWidgetProvider::class.java).apply {
                 action = ACTION_RESET_TODAY
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             }
-            val resetPending = PendingIntent.getBroadcast(
+            views.setOnClickPendingIntent(
+                R.id.widget_month_title,
+                PendingIntent.getBroadcast(context, 300 + appWidgetId, resetMonthIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            )
+
+            // Toggle Panel PendingIntents
+            val toggleIntent = Intent(context, NestoryWidgetProvider::class.java).apply {
+                action = ACTION_TOGGLE_PANEL
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            }
+            val togglePending = PendingIntent.getBroadcast(
                 context,
-                300 + appWidgetId,
-                resetMonthIntent,
+                800 + appWidgetId,
+                toggleIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.widget_month_title, resetPending)
+            views.setOnClickPendingIntent(R.id.widget_btn_toggle_panel, togglePending)
+            views.setOnClickPendingIntent(R.id.widget_btn_collapse_panel, togglePending)
 
-            // Date math for the 6x7 Month Grid
+            // Date math for the 6x7 Month Grid with leading & trailing dates
             val monthCal = Calendar.getInstance().apply {
                 set(Calendar.YEAR, displayedYear)
                 set(Calendar.MONTH, displayedMonth - 1)
                 set(Calendar.DAY_OF_MONTH, 1)
             }
-            val daysInMonth = monthCal.getActualMaximum(Calendar.DAY_OF_MONTH)
+            val daysInCurrentMonth = monthCal.getActualMaximum(Calendar.DAY_OF_MONTH)
             val firstDayOfWeek = (monthCal.get(Calendar.DAY_OF_WEEK) - 1) // Sunday = 0
+
+            val totalCellsNeeded = firstDayOfWeek + daysInCurrentMonth
+            val rowsNeeded = if (totalCellsNeeded > 35) 6 else 5
+
+            // Dynamically hide Row 5 when month finishes in 5 weeks (e.g. Oct 2026 ends on Sat Oct 31)
+            // This gives 20% more vertical space to all remaining cells!
+            if (rowsNeeded <= 5) {
+                views.setViewVisibility(R.id.row_5, View.GONE)
+            } else {
+                views.setViewVisibility(R.id.row_5, View.VISIBLE)
+            }
+
+            // Days in previous month
+            val prevMonthCal = Calendar.getInstance().apply {
+                set(Calendar.YEAR, if (displayedMonth == 1) displayedYear - 1 else displayedYear)
+                set(Calendar.MONTH, if (displayedMonth == 1) 11 else displayedMonth - 2)
+                set(Calendar.DAY_OF_MONTH, 1)
+            }
+            val daysInPrevMonth = prevMonthCal.getActualMaximum(Calendar.DAY_OF_MONTH)
+            val prevYear = prevMonthCal.get(Calendar.YEAR)
+            val prevMonth = prevMonthCal.get(Calendar.MONTH) + 1
+
+            // Next month
+            val nextYear = if (displayedMonth == 12) displayedYear + 1 else displayedYear
+            val nextMonth = if (displayedMonth == 12) 1 else displayedMonth + 1
 
             val eventsByDate = snapshot?.optJSONObject("eventsByDate")
             val memoriesByDate = snapshot?.optJSONObject("memoriesByDate")
 
-            // Populate the 6x7 Month Grid
-            var dayCounter = 1
+            // Populate calendar cells
             for (row in 0 until 6) {
                 for (col in 0 until 7) {
                     val cellIndex = row * 7 + col
-                    val resId = context.resources.getIdentifier(
-                        "day_${row}_${col}",
-                        "id",
-                        context.packageName
-                    )
-                    if (resId == 0) continue
 
-                    if (cellIndex >= firstDayOfWeek && dayCounter <= daysInMonth) {
-                        val currentCellDay = dayCounter
-                        views.setTextViewText(resId, currentCellDay.toString())
+                    val cellResId = context.resources.getIdentifier("cell_${row}_${col}", "id", context.packageName)
+                    val dateResId = context.resources.getIdentifier("date_${row}_${col}", "id", context.packageName)
+                    val chip1ResId = context.resources.getIdentifier("chip1_${row}_${col}", "id", context.packageName)
+                    val chip2ResId = context.resources.getIdentifier("chip2_${row}_${col}", "id", context.packageName)
+                    val chip3ResId = context.resources.getIdentifier("chip3_${row}_${col}", "id", context.packageName)
 
-                        val dateKey = String.format(Locale.US, "%04d-%02d-%02d", displayedYear, displayedMonth, currentCellDay)
-                        val hasEvents = eventsByDate?.has(dateKey) == true
-                        val isToday = (displayedYear == todayYear && displayedMonth == todayMonth && currentCellDay == todayDay)
-                        val isSelected = (displayedYear == selectedYear && displayedMonth == selectedMonth && currentCellDay == selectedDay)
+                    if (cellResId == 0 || dateResId == 0) continue
 
-                        if (isToday && isSelected) {
-                            views.setInt(resId, "setBackgroundResource", R.drawable.widget_today_bg)
-                            views.setTextColor(resId, Color.BLACK)
-                        } else if (isSelected) {
-                            views.setInt(resId, "setBackgroundResource", R.drawable.widget_selected_bg)
-                            views.setTextColor(resId, Color.WHITE)
-                        } else if (isToday) {
-                            views.setInt(resId, "setBackgroundResource", R.drawable.widget_today_outline_bg)
-                            views.setTextColor(resId, Color.WHITE)
-                        } else if (hasEvents) {
-                            views.setInt(resId, "setBackgroundResource", R.drawable.widget_event_day_bg)
-                            views.setTextColor(resId, Color.parseColor("#FFFFFF"))
-                        } else {
-                            views.setInt(resId, "setBackgroundResource", 0)
-                            views.setTextColor(resId, Color.parseColor("#EDEDED"))
-                        }
+                    val cellYear: Int
+                    val cellMonth: Int
+                    val cellDay: Int
+                    val isCurrentMonth: Boolean
 
-                        // Broadcast intent to select this day
-                        val selectIntent = Intent(context, NestoryWidgetProvider::class.java).apply {
-                            action = ACTION_SELECT_DATE
-                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                            putExtra(EXTRA_YEAR, displayedYear)
-                            putExtra(EXTRA_MONTH, displayedMonth)
-                            putExtra(EXTRA_DAY, currentCellDay)
-                        }
-                        val selectPending = PendingIntent.getBroadcast(
-                            context,
-                            2000 + (appWidgetId * 100) + cellIndex,
-                            selectIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                        )
-                        views.setOnClickPendingIntent(resId, selectPending)
-
-                        dayCounter++
+                    if (cellIndex < firstDayOfWeek) {
+                        // Leading days from previous month
+                        cellDay = daysInPrevMonth - firstDayOfWeek + cellIndex + 1
+                        cellYear = prevYear
+                        cellMonth = prevMonth
+                        isCurrentMonth = false
+                    } else if (cellIndex < firstDayOfWeek + daysInCurrentMonth) {
+                        // Current month days
+                        cellDay = cellIndex - firstDayOfWeek + 1
+                        cellYear = displayedYear
+                        cellMonth = displayedMonth
+                        isCurrentMonth = true
                     } else {
-                        // Empty cell outside month bounds
-                        views.setTextViewText(resId, "")
-                        views.setInt(resId, "setBackgroundResource", 0)
-                        views.setOnClickPendingIntent(resId, null)
+                        // Trailing days from next month
+                        cellDay = cellIndex - (firstDayOfWeek + daysInCurrentMonth) + 1
+                        cellYear = nextYear
+                        cellMonth = nextMonth
+                        isCurrentMonth = false
+                    }
+
+                    // Set Date Number Text
+                    views.setTextViewText(dateResId, cellDay.toString())
+
+                    val dateKey = String.format(Locale.US, "%04d-%02d-%02d", cellYear, cellMonth, cellDay)
+                    val isToday = (cellYear == todayYear && cellMonth == todayMonth && cellDay == todayDay)
+                    val isSelected = (cellYear == selectedYear && cellMonth == selectedMonth && cellDay == selectedDay)
+
+                    // Date Number Styling
+                    if (isToday) {
+                        views.setInt(dateResId, "setBackgroundResource", R.drawable.widget_today_badge)
+                        views.setTextColor(dateResId, Color.parseColor("#09090B"))
+                    } else {
+                        views.setInt(dateResId, "setBackgroundResource", 0)
+                        val numColor = if (isCurrentMonth) Color.parseColor("#E5E2E1") else Color.parseColor("#5A5A5A")
+                        views.setTextColor(dateResId, numColor)
+                    }
+
+                    // Cell Border Styling
+                    if (isSelected) {
+                        views.setInt(cellResId, "setBackgroundResource", R.drawable.widget_cell_selected_border)
+                    } else {
+                        views.setInt(cellResId, "setBackgroundResource", R.drawable.widget_cell_border)
+                    }
+
+                    // Select Date Broadcast Intent
+                    val selectIntent = Intent(context, NestoryWidgetProvider::class.java).apply {
+                        action = ACTION_SELECT_DATE
+                        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                        putExtra(EXTRA_YEAR, cellYear)
+                        putExtra(EXTRA_MONTH, cellMonth)
+                        putExtra(EXTRA_DAY, cellDay)
+                    }
+                    val selectPending = PendingIntent.getBroadcast(
+                        context,
+                        2000 + (appWidgetId * 100) + cellIndex,
+                        selectIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                    views.setOnClickPendingIntent(cellResId, selectPending)
+
+                    // Build chips list: ONLY FOR CURRENT MONTH'S DATES!
+                    // Leading/trailing days from other months never display event chips.
+                    data class ChipInfo(val text: String, val bgRes: Int, val textColor: Int)
+                    val chips = mutableListOf<ChipInfo>()
+
+                    if (isCurrentMonth) {
+                        val dateEvents = eventsByDate?.optJSONArray(dateKey)
+                        val dateMemory = memoriesByDate?.optJSONObject(dateKey)
+
+                        if (dateMemory != null) {
+                            val mTitle = dateMemory.optString("title", "Memory")
+                            val preview = if (mTitle.length > 8) mTitle.take(7) + "…" else mTitle
+                            chips.add(ChipInfo("✦ $preview", R.drawable.widget_chip_gold, Color.WHITE))
+                        }
+
+                        if (dateEvents != null) {
+                            for (e in 0 until dateEvents.length()) {
+                                val evt = dateEvents.getJSONObject(e)
+                                val title = evt.optString("title", "Event")
+                                val chipTitle = formatChipTitle(title)
+                                val (bgRes, textColor) = getChipBackgroundAndColor(title, evt.optString("calendarColorHex", null))
+                                chips.add(ChipInfo(chipTitle, bgRes, textColor))
+                            }
+                        }
+                    }
+
+                    // Bind Chip 1
+                    if (chips.isNotEmpty()) {
+                        views.setViewVisibility(chip1ResId, View.VISIBLE)
+                        views.setTextViewText(chip1ResId, chips[0].text)
+                        views.setInt(chip1ResId, "setBackgroundResource", chips[0].bgRes)
+                        views.setTextColor(chip1ResId, chips[0].textColor)
+                    } else {
+                        views.setViewVisibility(chip1ResId, View.GONE)
+                    }
+
+                    // Bind Chip 2
+                    if (chips.size >= 2) {
+                        views.setViewVisibility(chip2ResId, View.VISIBLE)
+                        views.setTextViewText(chip2ResId, chips[1].text)
+                        views.setInt(chip2ResId, "setBackgroundResource", chips[1].bgRes)
+                        views.setTextColor(chip2ResId, chips[1].textColor)
+                    } else {
+                        views.setViewVisibility(chip2ResId, View.GONE)
+                    }
+
+                    // Bind Chip 3 (or overflow +N more)
+                    if (chips.size == 3) {
+                        views.setViewVisibility(chip3ResId, View.VISIBLE)
+                        views.setTextViewText(chip3ResId, chips[2].text)
+                        views.setInt(chip3ResId, "setBackgroundResource", chips[2].bgRes)
+                        views.setTextColor(chip3ResId, chips[2].textColor)
+                    } else if (chips.size > 3) {
+                        views.setViewVisibility(chip3ResId, View.VISIBLE)
+                        views.setTextViewText(chip3ResId, "+${chips.size - 2} more")
+                        views.setInt(chip3ResId, "setBackgroundResource", R.drawable.widget_chip_gray)
+                        views.setTextColor(chip3ResId, Color.parseColor("#E2E8F0"))
+                    } else {
+                        views.setViewVisibility(chip3ResId, View.GONE)
                     }
                 }
             }
@@ -344,6 +481,7 @@ class NestoryWidgetProvider : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_btn_add_event, addEventPending)
+            views.setOnClickPendingIntent(R.id.widget_btn_add_event_sidebar, addEventPending)
 
             // Action Button 2: Add Memory for Selected Date
             val addMemoryIntent = Intent(context, MainActivity::class.java).apply {
@@ -358,6 +496,7 @@ class NestoryWidgetProvider : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_btn_add_memory, addMemoryPending)
+            views.setOnClickPendingIntent(R.id.widget_btn_add_memory_sidebar, addMemoryPending)
 
             // Background container click -> open app
             val launchIntent = Intent(context, MainActivity::class.java).apply {
@@ -372,7 +511,7 @@ class NestoryWidgetProvider : AppWidgetProvider() {
             )
             views.setOnClickPendingIntent(R.id.widget_root, mainPending)
 
-            // Populate Events & Memory for Selected Date (TOP ALIGNED)
+            // Populate Sidebar / Expanded Agenda details for selected date
             val selectedEvents = eventsByDate?.optJSONArray(selectedDateStr)
                 ?: if (selectedDateStr == todayDateStr) snapshot?.optJSONArray("upcomingEvents") else null
             val hasEvents = selectedEvents != null && selectedEvents.length() > 0
@@ -380,7 +519,26 @@ class NestoryWidgetProvider : AppWidgetProvider() {
             val memory = memoriesByDate?.optJSONObject(selectedDateStr)
                 ?: if (selectedDateStr == todayDateStr) snapshot?.optJSONObject("todayMemory") else null
             val memoryTitle = memory?.optString("title")?.takeIf { it.isNotBlank() }
+            val memoryImagePath = memory?.optString("imagePath")?.takeIf { it.isNotBlank() }
 
+            // Memory Preview Section (Photo + Title)
+            if (memoryTitle != null) {
+                views.setViewVisibility(R.id.widget_memory_section, View.VISIBLE)
+                views.setTextViewText(R.id.widget_memory_title, "✦ $memoryTitle")
+
+                // Decode memory photo thumbnail safely
+                val memoryBmp = loadRoundedThumbnail(memoryImagePath, 240, 160)
+                if (memoryBmp != null) {
+                    views.setViewVisibility(R.id.widget_memory_image, View.VISIBLE)
+                    views.setImageViewBitmap(R.id.widget_memory_image, memoryBmp)
+                } else {
+                    views.setViewVisibility(R.id.widget_memory_image, View.GONE)
+                }
+            } else {
+                views.setViewVisibility(R.id.widget_memory_section, View.GONE)
+            }
+
+            // Populate Events List in Sidebar
             if (hasEvents) {
                 views.setViewVisibility(R.id.widget_events_view, View.VISIBLE)
                 views.setViewVisibility(R.id.widget_empty_view, View.GONE)
@@ -403,26 +561,77 @@ class NestoryWidgetProvider : AppWidgetProvider() {
                         views.setViewVisibility(eventRows[i], View.GONE)
                     }
                 }
-
-                if (memoryTitle != null) {
-                    views.setViewVisibility(R.id.widget_memory_row, View.VISIBLE)
-                    views.setTextViewText(R.id.widget_memory_title, "✦ $memoryTitle")
-                } else {
-                    views.setViewVisibility(R.id.widget_memory_row, View.GONE)
-                }
             } else {
                 views.setViewVisibility(R.id.widget_events_view, View.GONE)
                 views.setViewVisibility(R.id.widget_empty_view, View.VISIBLE)
-
-                if (memoryTitle != null) {
-                    views.setViewVisibility(R.id.widget_empty_memory_row, View.VISIBLE)
-                    views.setTextViewText(R.id.widget_empty_memory_title, "✦ $memoryTitle")
-                } else {
-                    views.setViewVisibility(R.id.widget_empty_memory_row, View.GONE)
-                }
             }
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+
+        private fun getChipBackgroundAndColor(title: String, colorHex: String?): Pair<Int, Int> {
+            val lower = title.lowercase(Locale.ROOT)
+            return when {
+                lower.contains("formula") || lower.contains("f1") || lower.contains("race") ||
+                lower.contains("grand prix") || lower.contains("gp") ->
+                    Pair(R.drawable.widget_chip_orange, Color.WHITE)
+                lower.contains("mahatma") || lower.contains("dussehra") || lower.contains("karaka") ||
+                lower.contains("holiday") || lower.contains("first day") || lower.contains("maha") ||
+                lower.contains("jayanti") || lower.contains("diwali") ->
+                    Pair(R.drawable.widget_chip_teal, Color.WHITE)
+                lower.contains("cancel") || lower.contains("meeting") || lower.contains("call") ->
+                    Pair(R.drawable.widget_chip_blue, Color.WHITE)
+                else -> {
+                    when (Math.abs(title.hashCode()) % 3) {
+                        0 -> Pair(R.drawable.widget_chip_teal, Color.WHITE)
+                        1 -> Pair(R.drawable.widget_chip_orange, Color.WHITE)
+                        else -> Pair(R.drawable.widget_chip_blue, Color.WHITE)
+                    }
+                }
+            }
+        }
+
+        private fun formatChipTitle(rawTitle: String): String {
+            // Strip leading emoji symbols and excess spacing so textual title is prominent in compact cells
+            val cleaned = rawTitle.replace(Regex("^[\\p{So}\\p{Sk}\\p{Sm}\\p{Sc}\\p{C}\\s]+"), "").trim()
+            return if (cleaned.isNotEmpty()) cleaned else rawTitle.trim()
+        }
+
+        private fun loadRoundedThumbnail(imagePath: String?, maxWidth: Int, maxHeight: Int): Bitmap? {
+            if (imagePath.isNullOrBlank()) return null
+            val file = File(imagePath)
+            if (!file.exists() || !file.canRead()) return null
+
+            return try {
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeFile(file.absolutePath, options)
+                var sampleSize = 1
+                while (options.outWidth / (sampleSize * 2) >= maxWidth &&
+                    options.outHeight / (sampleSize * 2) >= maxHeight
+                ) {
+                    sampleSize *= 2
+                }
+                val decodeOptions = BitmapFactory.Options().apply {
+                    inSampleSize = sampleSize
+                    inPreferredConfig = Bitmap.Config.RGB_565
+                }
+                val rawBmp = BitmapFactory.decodeFile(file.absolutePath, decodeOptions) ?: return null
+
+                // Round corners cleanly
+                val output = Bitmap.createBitmap(rawBmp.width, rawBmp.height, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(output)
+                val paint = Paint().apply { isAntiAlias = true }
+                val rect = Rect(0, 0, rawBmp.width, rawBmp.height)
+                val rectF = RectF(rect)
+                val roundPx = 14f
+                canvas.drawRoundRect(rectF, roundPx, roundPx, paint)
+                paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+                canvas.drawBitmap(rawBmp, rect, rect, paint)
+                rawBmp.recycle()
+                output
+            } catch (e: Throwable) {
+                null
+            }
         }
     }
 }

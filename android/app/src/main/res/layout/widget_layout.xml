@@ -5,246 +5,3431 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_background"
     android:orientation="horizontal"
-    android:padding="12dp">
+    android:padding="8dp">
 
-    <!-- Left Column: Interactive Month Calendar -->
+    <!-- Left / Full Month Calendar Grid -->
     <LinearLayout
         android:id="@+id/widget_calendar_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.15"
+        android:layout_weight="1"
         android:orientation="vertical">
 
-        <!-- Month Navigation Header: <  MONTH YEAR  > -->
+        <!-- Top Header: Month Name, Nav Chevrons, Minimal Actions (Anti-Slop Design) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/widget_btn_prev_month"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:background="@drawable/widget_circle_button"
-                android:gravity="center"
-                android:text="‹"
-                android:textColor="#C4C7C8"
-                android:textSize="14sp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/widget_month_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="OCTOBER 2026"
-                android:textColor="#FFFFFF"
-                android:textSize="11sp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="October"
+                android:textColor="#F4F4F5"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
+            <!-- Large 36dp touch target for Previous Month -->
+            <TextView
+                android:id="@+id/widget_btn_prev_month"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:gravity="center"
+                android:text="‹"
+                android:textColor="#A1A1AA"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Large 36dp touch target for Next Month -->
             <TextView
                 android:id="@+id/widget_btn_next_month"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:background="@drawable/widget_circle_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="2dp"
                 android:gravity="center"
                 android:text="›"
-                android:textColor="#C4C7C8"
-                android:textSize="14sp"
+                android:textColor="#A1A1AA"
+                android:textSize="20sp"
                 android:textStyle="bold" />
+
+            <!-- Collapsed-only action controls: hidden when sidebar is open to preserve space -->
+            <LinearLayout
+                android:id="@+id/widget_header_actions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- Material 3 Pill Button: Add Event -->
+                <TextView
+                    android:id="@+id/widget_btn_add_event"
+                    android:layout_width="38dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/widget_btn_pill"
+                    android:gravity="center"
+                    android:text="+"
+                    android:textColor="#F4F4F5"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Add Memory Button -->
+                <ImageView
+                    android:id="@+id/widget_btn_add_memory"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="@string/add_memory"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_widget_add_memory" />
+
+                <!-- Toggle Agenda Sidebar Button -->
+                <ImageView
+                    android:id="@+id/widget_btn_toggle_panel"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="@string/expand_panel"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_widget_expand" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Weekday Labels: S M T W T F S -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="S"
-                android:textColor="#8E8E93"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="M"
-                android:textColor="#C4C7C8"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="T"
-                android:textColor="#C4C7C8"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="W"
-                android:textColor="#C4C7C8"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="T"
-                android:textColor="#C4C7C8"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="F"
-                android:textColor="#C4C7C8"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="S"
-                android:textColor="#8E8E93"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="S" android:textColor="#71717A" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="M" android:textColor="#71717A" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="T" android:textColor="#71717A" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="W" android:textColor="#71717A" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="T" android:textColor="#71717A" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="F" android:textColor="#71717A" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="S" android:textColor="#71717A" android:textSize="10sp" android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- 6x7 Month Grid -->
+        <!-- Dynamic Hairline Grid Table (Row 5 hides automatically when month fits in 5 rows) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
         <!-- Row 0 -->
         <LinearLayout
+            android:id="@+id/row_0"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView android:id="@+id/day_0_0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_0_1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_0_2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_0_3" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_0_4" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_0_5" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_0_6" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-        </LinearLayout>
+            <!-- Cell (0, 0) -->
+            <LinearLayout
+                android:id="@+id/cell_0_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
 
+                <TextView
+                    android:id="@+id/date_0_0"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_0_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_0_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_0_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (0, 1) -->
+            <LinearLayout
+                android:id="@+id/cell_0_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_0_1"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_0_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_0_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_0_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (0, 2) -->
+            <LinearLayout
+                android:id="@+id/cell_0_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_0_2"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_0_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_0_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_0_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (0, 3) -->
+            <LinearLayout
+                android:id="@+id/cell_0_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_0_3"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_0_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_0_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_0_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (0, 4) -->
+            <LinearLayout
+                android:id="@+id/cell_0_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_0_4"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_0_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_0_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_0_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (0, 5) -->
+            <LinearLayout
+                android:id="@+id/cell_0_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_0_5"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_0_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_0_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_0_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (0, 6) -->
+            <LinearLayout
+                android:id="@+id/cell_0_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_0_6"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_0_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_0_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_0_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
         <!-- Row 1 -->
         <LinearLayout
+            android:id="@+id/row_1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView android:id="@+id/day_1_0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_1_1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_1_2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_1_3" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_1_4" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_1_5" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_1_6" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-        </LinearLayout>
+            <!-- Cell (1, 0) -->
+            <LinearLayout
+                android:id="@+id/cell_1_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
 
+                <TextView
+                    android:id="@+id/date_1_0"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_1_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_1_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_1_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (1, 1) -->
+            <LinearLayout
+                android:id="@+id/cell_1_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_1_1"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_1_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_1_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_1_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (1, 2) -->
+            <LinearLayout
+                android:id="@+id/cell_1_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_1_2"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_1_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_1_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_1_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (1, 3) -->
+            <LinearLayout
+                android:id="@+id/cell_1_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_1_3"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_1_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_1_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_1_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (1, 4) -->
+            <LinearLayout
+                android:id="@+id/cell_1_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_1_4"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_1_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_1_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_1_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (1, 5) -->
+            <LinearLayout
+                android:id="@+id/cell_1_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_1_5"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_1_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_1_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_1_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (1, 6) -->
+            <LinearLayout
+                android:id="@+id/cell_1_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_1_6"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_1_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_1_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_1_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
         <!-- Row 2 -->
         <LinearLayout
+            android:id="@+id/row_2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView android:id="@+id/day_2_0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_2_1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_2_2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_2_3" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_2_4" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_2_5" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_2_6" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-        </LinearLayout>
+            <!-- Cell (2, 0) -->
+            <LinearLayout
+                android:id="@+id/cell_2_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
 
+                <TextView
+                    android:id="@+id/date_2_0"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_2_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_2_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_2_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (2, 1) -->
+            <LinearLayout
+                android:id="@+id/cell_2_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_2_1"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_2_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_2_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_2_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (2, 2) -->
+            <LinearLayout
+                android:id="@+id/cell_2_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_2_2"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_2_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_2_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_2_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (2, 3) -->
+            <LinearLayout
+                android:id="@+id/cell_2_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_2_3"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_2_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_2_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_2_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (2, 4) -->
+            <LinearLayout
+                android:id="@+id/cell_2_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_2_4"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_2_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_2_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_2_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (2, 5) -->
+            <LinearLayout
+                android:id="@+id/cell_2_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_2_5"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_2_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_2_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_2_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (2, 6) -->
+            <LinearLayout
+                android:id="@+id/cell_2_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_2_6"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_2_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_2_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_2_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
         <!-- Row 3 -->
         <LinearLayout
+            android:id="@+id/row_3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView android:id="@+id/day_3_0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_3_1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_3_2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_3_3" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_3_4" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_3_5" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_3_6" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-        </LinearLayout>
+            <!-- Cell (3, 0) -->
+            <LinearLayout
+                android:id="@+id/cell_3_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
 
+                <TextView
+                    android:id="@+id/date_3_0"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_3_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_3_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_3_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (3, 1) -->
+            <LinearLayout
+                android:id="@+id/cell_3_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_3_1"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_3_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_3_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_3_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (3, 2) -->
+            <LinearLayout
+                android:id="@+id/cell_3_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_3_2"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_3_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_3_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_3_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (3, 3) -->
+            <LinearLayout
+                android:id="@+id/cell_3_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_3_3"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_3_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_3_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_3_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (3, 4) -->
+            <LinearLayout
+                android:id="@+id/cell_3_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_3_4"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_3_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_3_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_3_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (3, 5) -->
+            <LinearLayout
+                android:id="@+id/cell_3_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_3_5"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_3_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_3_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_3_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (3, 6) -->
+            <LinearLayout
+                android:id="@+id/cell_3_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_3_6"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_3_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_3_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_3_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
         <!-- Row 4 -->
         <LinearLayout
+            android:id="@+id/row_4"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView android:id="@+id/day_4_0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_4_1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_4_2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_4_3" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_4_4" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_4_5" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_4_6" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-        </LinearLayout>
+            <!-- Cell (4, 0) -->
+            <LinearLayout
+                android:id="@+id/cell_4_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
 
+                <TextView
+                    android:id="@+id/date_4_0"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_4_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_4_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_4_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (4, 1) -->
+            <LinearLayout
+                android:id="@+id/cell_4_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_4_1"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_4_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_4_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_4_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (4, 2) -->
+            <LinearLayout
+                android:id="@+id/cell_4_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_4_2"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_4_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_4_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_4_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (4, 3) -->
+            <LinearLayout
+                android:id="@+id/cell_4_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_4_3"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_4_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_4_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_4_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (4, 4) -->
+            <LinearLayout
+                android:id="@+id/cell_4_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_4_4"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_4_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_4_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_4_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (4, 5) -->
+            <LinearLayout
+                android:id="@+id/cell_4_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_4_5"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_4_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_4_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_4_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (4, 6) -->
+            <LinearLayout
+                android:id="@+id/cell_4_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_4_6"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_4_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_4_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_4_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
         <!-- Row 5 -->
         <LinearLayout
+            android:id="@+id/row_5"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView android:id="@+id/day_5_0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_5_1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_5_2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_5_3" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_5_4" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_5_5" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
-            <TextView android:id="@+id/day_5_6" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:textSize="10.5sp" android:textColor="#EDEDED" />
+            <!-- Cell (5, 0) -->
+            <LinearLayout
+                android:id="@+id/cell_5_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_5_0"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_5_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_5_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_5_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (5, 1) -->
+            <LinearLayout
+                android:id="@+id/cell_5_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_5_1"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_5_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_5_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_5_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (5, 2) -->
+            <LinearLayout
+                android:id="@+id/cell_5_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_5_2"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_5_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_5_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_5_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (5, 3) -->
+            <LinearLayout
+                android:id="@+id/cell_5_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_5_3"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_5_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_5_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_5_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (5, 4) -->
+            <LinearLayout
+                android:id="@+id/cell_5_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_5_4"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_5_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_5_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_5_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (5, 5) -->
+            <LinearLayout
+                android:id="@+id/cell_5_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_5_5"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_5_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_5_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_5_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <!-- Cell (5, 6) -->
+            <LinearLayout
+                android:id="@+id/cell_5_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_cell_border"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="3dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp">
+
+                <TextView
+                    android:id="@+id/date_5_6"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textColor="#E5E2E1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip1_5_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:background="@drawable/widget_chip_orange"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip2_5_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_teal"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/chip3_5_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@drawable/widget_chip_blue"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="3dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Subtle Vertical Divider -->
+    <!-- Subtle Vertical Divider (Visible when Expanded) -->
     <FrameLayout
         android:id="@+id/widget_divider"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="10dp"
-        android:background="#222222" />
+        android:layout_marginEnd="8dp"
+        android:background="#23272E"
+        android:visibility="gone" />
 
-    <!-- Right Column: Selected Date Agenda & Action Header -->
+    <!-- Right Column: Collapsible Selected Date Agenda & Memory Panel -->
     <LinearLayout
         android:id="@+id/widget_agenda_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.25"
-        android:orientation="vertical">
+        android:layout_weight="0.9"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <!-- Header: Date Title and Action Buttons -->
+        <!-- Header: Date Title, Action Buttons, and Collapse Control -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -259,185 +3444,62 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="16 OCT."
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
+                android:textColor="#F4F4F5"
+                android:textSize="13.5sp"
                 android:textStyle="bold" />
 
-            <!-- Add Event Button -->
+            <!-- Add Event Button in Sidebar -->
             <ImageView
-                android:id="@+id/widget_btn_add_event"
+                android:id="@+id/widget_btn_add_event_sidebar"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/widget_circle_button"
+                android:layout_marginEnd="4dp"
                 android:contentDescription="@string/add_event"
                 android:padding="5dp"
                 android:src="@drawable/ic_widget_add_event" />
 
-            <!-- Add Memory Button -->
+            <!-- Add Memory Button in Sidebar -->
             <ImageView
-                android:id="@+id/widget_btn_add_memory"
+                android:id="@+id/widget_btn_add_memory_sidebar"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:background="@drawable/widget_circle_button"
+                android:layout_marginEnd="4dp"
                 android:contentDescription="@string/add_memory"
                 android:padding="5dp"
                 android:src="@drawable/ic_widget_add_memory" />
+
+            <!-- Collapse Panel Button -->
+            <ImageView
+                android:id="@+id/widget_btn_collapse_panel"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:contentDescription="@string/collapse_panel"
+                android:padding="5dp"
+                android:src="@drawable/ic_widget_collapse" />
         </LinearLayout>
 
-        <!-- Events List Container (TOP ALIGNED) -->
+        <!-- Memory Preview Card (Prominent Photo + Title) -->
         <LinearLayout
-            android:id="@+id/widget_events_view"
+            android:id="@+id/widget_memory_section"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:gravity="top"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/widget_cell_border"
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:visibility="gone">
 
-            <!-- Event 1 -->
-            <LinearLayout
-                android:id="@+id/event_1_row"
+            <!-- Memory Image Thumbnail -->
+            <ImageView
+                android:id="@+id/widget_memory_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="80dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="Memory photo"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
 
-                <ImageView
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/widget_event_dot" />
-
-                <TextView
-                    android:id="@+id/event_1_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="#8E8E93"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/event_1_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#E5E2E1"
-                    android:textSize="10.5sp" />
-            </LinearLayout>
-
-            <!-- Event 2 -->
             <LinearLayout
-                android:id="@+id/event_2_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/widget_event_dot" />
-
-                <TextView
-                    android:id="@+id/event_2_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="#8E8E93"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/event_2_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#E5E2E1"
-                    android:textSize="10.5sp" />
-            </LinearLayout>
-
-            <!-- Event 3 -->
-            <LinearLayout
-                android:id="@+id/event_3_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/widget_event_dot" />
-
-                <TextView
-                    android:id="@+id/event_3_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="#8E8E93"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/event_3_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#E5E2E1"
-                    android:textSize="10.5sp" />
-            </LinearLayout>
-
-            <!-- Event 4 -->
-            <LinearLayout
-                android:id="@+id/event_4_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/widget_event_dot" />
-
-                <TextView
-                    android:id="@+id/event_4_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="#8E8E93"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/event_4_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#E5E2E1"
-                    android:textSize="10.5sp" />
-            </LinearLayout>
-
-            <!-- Selected Day's Memory Highlight Row -->
-            <LinearLayout
-                android:id="@+id/widget_memory_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -456,71 +3518,209 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#C8C6C9"
-                    android:textSize="10sp"
+                    android:maxLines="3"
+                    android:textColor="#E6C687"
+                    android:textSize="11sp"
                     android:textStyle="italic" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Empty State Container (TOP ALIGNED) -->
+        <!-- Events List Container: Stacked Time on Top, Title on Bottom -->
+        <LinearLayout
+            android:id="@+id/widget_events_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="6dp"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:orientation="vertical">
+
+            <!-- Event 1: Stacked Time-over-Title -->
+            <LinearLayout
+                android:id="@+id/event_1_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <!-- Top line: Dot indicator + Time -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/widget_event_dot" />
+
+                    <TextView
+                        android:id="@+id/event_1_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#C4C7C8"
+                        android:textSize="9.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Bottom line: Full-width Event Title with multi-line wrapping -->
+                <TextView
+                    android:id="@+id/event_1_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textColor="#F0EDEC"
+                    android:textSize="11sp" />
+            </LinearLayout>
+            <!-- Event 2: Stacked Time-over-Title -->
+            <LinearLayout
+                android:id="@+id/event_2_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <!-- Top line: Dot indicator + Time -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/widget_event_dot" />
+
+                    <TextView
+                        android:id="@+id/event_2_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#C4C7C8"
+                        android:textSize="9.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Bottom line: Full-width Event Title with multi-line wrapping -->
+                <TextView
+                    android:id="@+id/event_2_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textColor="#F0EDEC"
+                    android:textSize="11sp" />
+            </LinearLayout>
+            <!-- Event 3: Stacked Time-over-Title -->
+            <LinearLayout
+                android:id="@+id/event_3_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <!-- Top line: Dot indicator + Time -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/widget_event_dot" />
+
+                    <TextView
+                        android:id="@+id/event_3_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#C4C7C8"
+                        android:textSize="9.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Bottom line: Full-width Event Title with multi-line wrapping -->
+                <TextView
+                    android:id="@+id/event_3_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textColor="#F0EDEC"
+                    android:textSize="11sp" />
+            </LinearLayout>
+            <!-- Event 4: Stacked Time-over-Title -->
+            <LinearLayout
+                android:id="@+id/event_4_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <!-- Top line: Dot indicator + Time -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/widget_event_dot" />
+
+                    <TextView
+                        android:id="@+id/event_4_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#C4C7C8"
+                        android:textSize="9.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Bottom line: Full-width Event Title with multi-line wrapping -->
+                <TextView
+                    android:id="@+id/event_4_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textColor="#F0EDEC"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Empty State View -->
         <LinearLayout
             android:id="@+id/widget_empty_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:gravity="top"
+            android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/widget_empty_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/no_events"
-                android:textColor="#E5E2E1"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/widget_empty_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/enjoy_day"
-                android:textColor="#8E8E93"
-                android:textSize="10sp" />
-
-            <!-- Empty state memory row if events are 0 but a memory was created on this date -->
-            <LinearLayout
-                android:id="@+id/widget_empty_memory_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="6dp"
-                    android:layout_height="6dp"
-                    android:layout_marginEnd="5dp"
-                    android:src="@drawable/widget_memory_dot" />
-
-                <TextView
-                    android:id="@+id/widget_empty_memory_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#C8C6C9"
-                    android:textSize="10sp"
-                    android:textStyle="italic" />
-            </LinearLayout>
+                android:text="No events scheduled"
+                android:textColor="#71717A"
+                android:textSize="11.5sp" />
         </LinearLayout>
-
     </LinearLayout>
-
 </LinearLayout>

@@ -5,7 +5,7 @@ import '../../shared/models/memory.dart';
 
 /// Contract Version for the Native Android Widget Snapshot.
 /// Increment whenever the schema changes.
-const int kWidgetSnapshotVersion = 2;
+const int kWidgetSnapshotVersion = 3;
 
 /// Represents an event summary optimized for native widget presentation.
 class WidgetEventItem {
@@ -73,18 +73,21 @@ class WidgetMemoryItem {
     required this.title,
     required this.description,
     required this.photoCount,
+    this.imagePath,
   });
 
   final int id;
   final String title;
   final String description;
   final int photoCount;
+  final String? imagePath;
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
         'description': description,
         'photoCount': photoCount,
+        'imagePath': imagePath,
       };
 
   factory WidgetMemoryItem.fromJson(Map<String, dynamic> json) {
@@ -93,6 +96,7 @@ class WidgetMemoryItem {
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
       photoCount: json['photoCount'] as int? ?? 0,
+      imagePath: json['imagePath'] as String?,
     );
   }
 
@@ -102,6 +106,7 @@ class WidgetMemoryItem {
       title: memory.title.isEmpty ? 'Memory' : memory.title,
       description: memory.description,
       photoCount: memory.photoCount,
+      imagePath: memory.photoUrls.isNotEmpty ? memory.photoUrls.first : null,
     );
   }
 }

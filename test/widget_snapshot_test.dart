@@ -43,7 +43,7 @@ void main() {
         todayMemories: memories,
       );
 
-      expect(snapshot.version, equals(2));
+      expect(snapshot.version, equals(3));
       expect(snapshot.year, equals(2026));
       expect(snapshot.month, equals(10));
       expect(snapshot.day, equals(16));
@@ -58,6 +58,7 @@ void main() {
       expect(snapshot.todayMemory, isNotNull);
       expect(snapshot.todayMemory!.title, equals('Autumn Walk'));
       expect(snapshot.todayMemory!.photoCount, equals(1));
+      expect(snapshot.todayMemory!.imagePath, equals('/data/user/0/com.nestory.app/photos/p1.jpg'));
       expect(snapshot.eventsByDate['2026-10-16'], isNotNull);
       expect(snapshot.eventsByDate['2026-10-16']!.length, equals(2));
 
@@ -65,10 +66,11 @@ void main() {
       final jsonStr = snapshot.toJsonString();
       final parsed = WidgetSnapshot.fromJsonString(jsonStr);
       expect(parsed, isNotNull);
-      expect(parsed!.version, equals(2));
+      expect(parsed!.version, equals(3));
       expect(parsed.day, equals(16));
       expect(parsed.upcomingEvents.length, equals(2));
       expect(parsed.todayMemory!.id, equals(101));
+      expect(parsed.todayMemory!.imagePath, equals('/data/user/0/com.nestory.app/photos/p1.jpg'));
       expect(parsed.eventsByDate['2026-10-16'], isNotNull);
     });
 
