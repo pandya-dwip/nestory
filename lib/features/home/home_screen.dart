@@ -96,8 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final clamped = index.clamp(0, _totalMonths - 1);
     await _monthController.animateToPage(
       clamped,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOutCubic,
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeOutCubic,
     );
   }
 
@@ -275,14 +275,15 @@ class _SmoothPageScrollPhysics extends PageScrollPhysics {
 
   @override
   SpringDescription get spring =>
-      SpringDescription.withDampingRatio(mass: 0.5, stiffness: 60, ratio: 1.05);
+      SpringDescription.withDampingRatio(mass: 0.6, stiffness: 140, ratio: 1.05);
 }
 
 /// Subtle wheel-roll tilt as a page scrolls past — a small `rotateX` that's
 /// exactly zero when a page is centered (so it's invisible at rest) and
 /// grows as the page travels toward/away from center, giving vertical
-/// paging a physical "rolling" feel instead of a flat slide. Rebuilds only
-/// the [Transform] each frame — [child] is built once and reused.
+/// paging a physical "rolling" feel instead of a flat slide. Wrapped in a
+/// [RepaintBoundary] so the 3D matrix transform runs on the GPU without
+/// re-rasterizing the calendar tree each frame.
 class _RollingPage extends StatelessWidget {
   const _RollingPage({
     required this.controller,
@@ -294,7 +295,7 @@ class _RollingPage extends StatelessWidget {
   final int index;
   final Widget child;
 
-  static const _maxAngle = 0.16; // radians (~9°) at full page offset
+  static const _maxAngle = 0.14; // radians (~8°) at full page offset
 
   @override
   Widget build(BuildContext context) {
@@ -306,6 +307,9 @@ class _RollingPage extends StatelessWidget {
           page = controller.page ?? page;
         }
         final delta = (page - index).clamp(-1.0, 1.0);
+        if (delta.abs() < 0.001) {
+          return animatedChild!;
+        }
         return Transform(
           alignment: Alignment.center,
           transform: Matrix4.identity()
@@ -314,7 +318,7 @@ class _RollingPage extends StatelessWidget {
           child: animatedChild,
         );
       },
-      child: child,
+      child: RepaintBoundary(child: child),
     );
   }
 }

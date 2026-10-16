@@ -43,8 +43,8 @@ class _GlassCardState extends State<GlassCard> {
           : (_) => setState(() => _pressed = false),
       child: AnimatedScale(
         scale: _pressed ? 0.98 : 1,
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
         child: GlassContainer(
           borderRadius: widget.borderRadius,
           padding: widget.padding,

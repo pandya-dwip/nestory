@@ -31,15 +31,6 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
   late final PageController _controller = PageController(
     viewportFraction: 0.82,
   );
-  double _page = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() => _page = _controller.page ?? 0);
-    });
-  }
 
   @override
   void dispose() {
@@ -60,48 +51,62 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
               controller: _controller,
               itemCount: widget.photoUrls.length,
               itemBuilder: (context, index) {
-                final delta = (_page - index).abs().clamp(0.0, 1.0);
-                final scale = 1 - (delta * 0.1);
-                final opacity = 1 - (delta * 0.5);
-                return Center(
-                  child: Transform.scale(
-                    scale: scale,
-                    child: Opacity(
-                      opacity: opacity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(AppRadius.md),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: colors.glassBorder.withValues(
-                                      alpha: 0.1,
-                                    ),
-                                  ),
-                                ),
-                                child: AppPhoto(
-                                  url: widget.photoUrls[index],
-                                  fit: widget._modeFor(index).boxFit,
-                                ),
-                              ),
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black.withValues(alpha: 0.55),
-                                      Colors.transparent,
-                                    ],
+                return AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    var page = index.toDouble();
+                    if (_controller.hasClients &&
+                        _controller.position.haveDimensions) {
+                      page = _controller.page ?? page;
+                    }
+                    final delta = (page - index).abs().clamp(0.0, 1.0);
+                    final scale = 1.0 - (delta * 0.08);
+                    final opacity = (1.0 - (delta * 0.35)).clamp(0.0, 1.0);
+
+                    return Center(
+                      child: Transform.scale(
+                        scale: scale,
+                        child: Opacity(
+                          opacity: opacity,
+                          child: child,
+                        ),
+                      ),
+                    );
+                  },
+                  child: RepaintBoundary(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: colors.glassBorder.withValues(
+                                    alpha: 0.1,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                              child: AppPhoto(
+                                url: widget.photoUrls[index],
+                                fit: widget._modeFor(index).boxFit,
+                              ),
+                            ),
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                    Colors.black.withValues(alpha: 0.55),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -111,21 +116,33 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(widget.photoUrls.length, (index) {
-              final active = (_page.round() == index);
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colors.onSurface.withValues(alpha: active ? 1 : 0.3),
-                ),
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              var currentPage = 0;
+              if (_controller.hasClients &&
+                  _controller.position.haveDimensions) {
+                currentPage = (_controller.page ?? 0).round();
+              }
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(widget.photoUrls.length, (index) {
+                  final active = (currentPage == index);
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOutCubic,
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: active ? 16 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color:
+                          colors.onSurface.withValues(alpha: active ? 1 : 0.3),
+                    ),
+                  );
+                }),
               );
-            }),
+            },
           ),
         ],
       ),

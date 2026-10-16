@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../data/repositories/calendar_event_repository.dart';
 import '../../../data/repositories/memory_repository.dart';
+import '../../../shared/models/memory.dart';
 import '../../../shared/models/photo_display_mode.dart';
 import '../../../shared/widgets/date_circle.dart';
 import 'month_year_picker_sheet.dart';
@@ -42,6 +43,25 @@ class MonthCalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
     final leading = DateTime(month.year, month.month, 1).weekday % 7; // Sun=0
+
+    // Pre-index memories and event counts for this month in O(N) once per build
+    final memoriesByDay = <int, List<Memory>>{};
+    for (final m in MemoryRepository.instance.all) {
+      if (m.date.year == month.year && m.date.month == month.month) {
+        memoriesByDay.putIfAbsent(m.date.day, () => []).add(m);
+      }
+    }
+
+    final eventsByDay = <int, int>{};
+    for (final e in CalendarEventRepository.instance.all) {
+      for (int d = 1; d <= daysInMonth; d++) {
+        final date = DateTime(month.year, month.month, d);
+        if (e.occursOn(date)) {
+          eventsByDay[d] = (eventsByDay[d] ?? 0) + 1;
+        }
+      }
+    }
+
     final monthStyle = Theme.of(
       context,
     ).textTheme.displayLarge?.copyWith(letterSpacing: 6);
@@ -160,12 +180,9 @@ class MonthCalendarPage extends StatelessWidget {
                           return const SizedBox.shrink();
                         }
 
+                        final dayMemories = memoriesByDay[dayNum] ?? const [];
+                        final eventCount = eventsByDay[dayNum] ?? 0;
                         final date = DateTime(month.year, month.month, dayNum);
-                        final dayMemories = MemoryRepository.instance.onDate(
-                          date,
-                        );
-                        final dayEvents = CalendarEventRepository.instance
-                            .onDate(date);
                         final selected =
                             selectedDate != null &&
                             selectedDate!.year == date.year &&
@@ -181,7 +198,7 @@ class MonthCalendarPage extends StatelessWidget {
                             coverDisplayMode: dayMemories.isNotEmpty
                                 ? dayMemories.first.coverDisplayMode
                                 : PhotoDisplayMode.fill,
-                            eventCount: dayEvents.length,
+                            eventCount: eventCount,
                             selected: selected,
                             onTap: () => onSelectDate(date),
                           ),

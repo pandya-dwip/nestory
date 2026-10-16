@@ -3,13 +3,13 @@
 class AppGlass {
   const AppGlass._();
 
-  // Level 1 — resting glass (30px blur, 3% fill, 10% border).
-  static const double blurLow = 30;
+  // Level 1 — resting glass (14px blur, 3% fill, 10% border).
+  static const double blurLow = 14;
   static const double fillOpacityLow = 0.03;
   static const double borderOpacityLow = 0.10;
 
-  // Level 2 — active/floating glass (50px blur, 5-6% fill, 20% border).
-  static const double blurHigh = 50;
+  // Level 2 — active/floating glass (20px blur, 5-6% fill, 20% border).
+  static const double blurHigh = 20;
   static const double fillOpacityHigh = 0.06;
   static const double borderOpacityHigh = 0.20;
 

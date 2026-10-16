@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1400),
+    duration: const Duration(milliseconds: 850),
   )..forward();
 
   late final _wordmarkFade = CurvedAnimation(
@@ -69,17 +69,21 @@ class _SplashScreenState extends State<SplashScreen>
     CalendarSyncService.instance.init();
     CalendarSyncService.instance.triggerOutboxDrain();
     await WidgetSnapshotService.instance.init();
-    // Keep the entrance on screen for a minimum stretch so it always reads
-    // as an intentional brand moment, never a flicker on fast devices.
-    const minimumDisplay = Duration(milliseconds: 1700);
+    // Keep the entrance on screen for an intentional brand moment, but snappy and responsive.
+    const minimumDisplay = Duration(milliseconds: 950);
     final remaining = minimumDisplay - stopwatch.elapsed;
     if (remaining > Duration.zero) await Future.delayed(remaining);
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 700),
-        pageBuilder: (context, animation, _) =>
-            FadeTransition(opacity: animation, child: const HomeScreen()),
+        transitionDuration: const Duration(milliseconds: 320),
+        pageBuilder: (context, animation, _) => FadeTransition(
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          ),
+          child: const HomeScreen(),
+        ),
       ),
     );
   }

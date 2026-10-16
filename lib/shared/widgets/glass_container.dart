@@ -49,34 +49,36 @@ class GlassContainer extends StatelessWidget {
         (active ? AppGlass.borderOpacityHigh : AppGlass.borderOpacityLow);
     final effectiveBorderColor = borderColor ?? colors.glassBorder;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: effectiveBlur, sigmaY: effectiveBlur),
-        child: Container(
-          alignment: alignment,
-          padding: padding,
-          decoration: BoxDecoration(
-            color: colors.onSurface.withValues(alpha: effectiveFill),
-            borderRadius: BorderRadius.circular(borderRadius),
-            border: Border.all(
-              color: effectiveBorderColor.withValues(
-                alpha: effectiveBorderOpacity,
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: effectiveBlur, sigmaY: effectiveBlur),
+          child: Container(
+            alignment: alignment,
+            padding: padding,
+            decoration: BoxDecoration(
+              color: colors.onSurface.withValues(alpha: effectiveFill),
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: Border.all(
+                color: effectiveBorderColor.withValues(
+                  alpha: effectiveBorderOpacity,
+                ),
+                width: 1,
               ),
-              width: 1,
+              boxShadow: active
+                  ? [
+                      BoxShadow(
+                        color: colors.onSurface.withValues(alpha: 0.1),
+                        blurRadius: 0,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 1),
+                      ),
+                    ]
+                  : null,
             ),
-            boxShadow: active
-                ? [
-                    BoxShadow(
-                      color: colors.onSurface.withValues(alpha: 0.1),
-                      blurRadius: 0,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 1),
-                    ),
-                  ]
-                : null,
+            child: child,
           ),
-          child: child,
         ),
       ),
     );

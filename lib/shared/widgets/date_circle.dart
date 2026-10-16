@@ -122,8 +122,8 @@ class DateCircle extends StatelessWidget {
       onTap: onTap,
       child: AnimatedScale(
         scale: selected ? 1.05 : 1,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOutCubic,
         child: AspectRatio(
           aspectRatio: 1,
           child: Opacity(

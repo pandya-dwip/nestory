@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_glass.dart';
 import '../../core/theme/app_radius.dart';
 import '../../core/theme/app_spacing.dart';
 import 'glass_icon_button.dart';
@@ -37,6 +38,10 @@ class GlassBottomSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      sheetAnimationStyle: const AnimationStyle(
+        curve: Curves.easeOutCubic,
+        duration: Duration(milliseconds: 280),
+      ),
       builder: (context) => GlassBottomSheet(
         title: title,
         subtitle: subtitle,
@@ -54,13 +59,17 @@ class GlassBottomSheet extends StatelessWidget {
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * heightFactor,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppRadius.lg),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-          child: Container(
+      child: RepaintBoundary(
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(AppRadius.lg),
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: AppGlass.blurHigh,
+              sigmaY: AppGlass.blurHigh,
+            ),
+            child: Container(
             decoration: BoxDecoration(
               color: colors.surface.withValues(alpha: 0.55),
               border: Border(
@@ -136,6 +145,7 @@ class GlassBottomSheet extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }
