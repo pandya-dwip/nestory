@@ -387,5 +387,46 @@ void main() {
         expect(outbox.first.googleEventId, createdEvent.googleEventId);
       },
     );
+
+    test(
+      'Offline events with primary ID remain visible after Google accounts sync email-based calendar IDs',
+      () async {
+        final repo = CalendarEventRepository.instance;
+
+        // 1. User creates event offline before any calendars exist
+        final offlineEvent = await repo.create(
+          googleCalendarId: 'primary',
+          title: 'Offline Doctor Visit',
+          isAllDay: false,
+          startDateTime: DateTime.utc(2026, 10, 20, 10, 0),
+          endDateTime: DateTime.utc(2026, 10, 20, 11, 0),
+        );
+
+        expect(repo.onDate(DateTime(2026, 10, 20)).length, 1);
+        expect(repo.byId(offlineEvent.id), isNotNull);
+
+        // 2. Google calendar list syncs with user email as calendar ID (NOT 'primary')
+        await db.calendarAccountsDao.upsertAccount(
+          email: 'dwip@example.com',
+          displayName: 'Dwip Pandya',
+        );
+
+        await db.calendarsMetaDao.upsertCalendar(
+          accountEmail: 'dwip@example.com',
+          googleCalendarId: 'dwip@example.com',
+          summary: 'dwip@example.com',
+          isPrimary: true,
+          isSelected: true,
+        );
+
+        await repo.reload();
+
+        // 3. The offline event created with 'primary' must NOT be lost or hidden
+        final events = repo.onDate(DateTime(2026, 10, 20));
+        expect(events.length, 1);
+        expect(events.first.title, 'Offline Doctor Visit');
+        expect(repo.byId(offlineEvent.id), isNotNull);
+      },
+    );
   });
 }

@@ -548,7 +548,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
         CalendarSyncService.instance.syncAll(isManual: true);
       }
     } catch (e) {
-      if (context.mounted) {
+      if (!context.mounted) return;
+      final err = e.toString();
+      final isCode10 = err.contains(' 10:') ||
+          err.contains(': 10') ||
+          err.contains('10,') ||
+          err.contains('10:');
+      if (isCode10) {
+        await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: context.colors.surfaceContainer,
+            title: const Text('Google Sign-In Setup Required'),
+            content: SingleChildScrollView(
+              child: Text(
+                'Developer Error (Code 10):\n\n'
+                'Google Play Services failed to authenticate because this app\'s package name and SHA-1 certificate fingerprint are not registered in the Google Cloud Console.\n\n'
+                'To resolve:\n'
+                '1. Open Google Cloud Console (console.cloud.google.com)\n'
+                '2. Go to APIs & Services > Credentials\n'
+                '3. Create or update an "Android" OAuth 2.0 Client ID:\n'
+                '   • Package: com.nestory.app\n'
+                '   • SHA-1: Your keystore SHA-1 fingerprint (run `cd android && ./gradlew signingReport` or check README.md)\n'
+                '4. Enable "Google Calendar API" in APIs & Services\n'
+                '5. In OAuth Consent Screen, add your Gmail under Test Users.',
+                style: Theme.of(ctx).textTheme.bodyMedium,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Got it'),
+              ),
+            ],
+          ),
+        );
+      } else {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Google Sign-In failed: $e')));

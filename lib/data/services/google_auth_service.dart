@@ -17,8 +17,21 @@ class GoogleAuthService extends ChangeNotifier {
 
   static final GoogleAuthService instance = GoogleAuthService._();
 
+  /// OAuth Client ID for Google Calendar authentication.
+  /// Can be provided at build time via:
+  /// `--dart-define=GOOGLE_CLIENT_ID=YOUR_CLIENT_ID.apps.googleusercontent.com`
+  static const String googleClientId = String.fromEnvironment(
+    'GOOGLE_CLIENT_ID',
+    defaultValue: '',
+  );
+
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: const [calendarEventsScope, calendarReadonlyScope],
+    clientId: kIsWeb ? googleClientId : null,
+    scopes: const [
+      'email',
+      calendarEventsScope,
+      calendarReadonlyScope,
+    ],
   );
 
   GoogleSignInAccount? _currentUser;

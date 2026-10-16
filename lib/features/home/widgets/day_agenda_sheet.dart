@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../data/repositories/calendar_event_repository.dart';
+import '../../../data/repositories/memory_repository.dart';
 import '../../../shared/models/calendar_event.dart';
 import '../../../shared/models/memory.dart';
 import '../../../shared/widgets/empty_state.dart';
@@ -37,83 +39,94 @@ class DayAgendaSheet extends StatelessWidget {
     final colors = context.colors;
     final theme = Theme.of(context);
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.gutter,
-        0,
-        AppSpacing.gutter,
-        AppSpacing.stackLg,
-      ),
-      children: [
-        // Side-by-side action buttons
-        Row(
-          children: [
-            Expanded(
-              child: GlassButton(
-                label: 'Add Memory',
-                icon: Icons.add_photo_alternate_outlined,
-                variant: GlassButtonVariant.primary,
-                onPressed: onAddMemory,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.stackSm),
-            Expanded(
-              child: GlassButton(
-                label: 'Add Event',
-                icon: Icons.calendar_today_outlined,
-                variant: GlassButtonVariant.secondary,
-                onPressed: onAddEvent,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.stackLg),
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        MemoryRepository.instance,
+        CalendarEventRepository.instance,
+      ]),
+      builder: (context, _) {
+        final activeMemories = MemoryRepository.instance.onDate(date);
+        final activeEvents = CalendarEventRepository.instance.onDate(date);
 
-        // Section: Calendar Events
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.gutter,
+            0,
+            AppSpacing.gutter,
+            AppSpacing.stackLg,
+          ),
           children: [
-            const SectionTitle('SCHEDULE & EVENTS'),
-            Text(
-              '${events.length} ${events.length == 1 ? 'Event' : 'Events'}',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: colors.outlineVariant,
-              ),
+            // Side-by-side action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: GlassButton(
+                    label: 'Add Memory',
+                    icon: Icons.add_photo_alternate_outlined,
+                    variant: GlassButtonVariant.primary,
+                    onPressed: onAddMemory,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.stackSm),
+                Expanded(
+                  child: GlassButton(
+                    label: 'Add Event',
+                    icon: Icons.calendar_today_outlined,
+                    variant: GlassButtonVariant.secondary,
+                    onPressed: onAddEvent,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.stackSm),
-        if (events.isEmpty)
-          const EmptyState('No events scheduled for this day.')
-        else
-          for (final event in events) ...[
-            _EventCard(event: event, onTap: () => onOpenEvent(event)),
+            const SizedBox(height: AppSpacing.stackLg),
+
+            // Section: Calendar Events
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SectionTitle('SCHEDULE & EVENTS'),
+                Text(
+                  '${activeEvents.length} ${activeEvents.length == 1 ? 'Event' : 'Events'}',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: colors.outlineVariant,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: AppSpacing.stackSm),
-          ],
-        const SizedBox(height: AppSpacing.stackLg),
+            if (activeEvents.isEmpty)
+              const EmptyState('No events scheduled for this day.')
+            else
+              for (final event in activeEvents) ...[
+                _EventCard(event: event, onTap: () => onOpenEvent(event)),
+                const SizedBox(height: AppSpacing.stackSm),
+              ],
+            const SizedBox(height: AppSpacing.stackLg),
 
-        // Section: Memories
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SectionTitle('MEMORIES'),
-            Text(
-              '${memories.length} ${memories.length == 1 ? 'Memory' : 'Memories'}',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: colors.outlineVariant,
-              ),
+            // Section: Memories
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SectionTitle('MEMORIES'),
+                Text(
+                  '${activeMemories.length} ${activeMemories.length == 1 ? 'Memory' : 'Memories'}',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: colors.outlineVariant,
+                  ),
+                ),
+              ],
             ),
+            const SizedBox(height: AppSpacing.stackSm),
+            if (activeMemories.isEmpty)
+              const EmptyState('No memories recorded on this day yet.')
+            else
+              for (final memory in activeMemories) ...[
+                MemoryCard(memory: memory, onTap: () => onOpenMemory(memory)),
+                const SizedBox(height: AppSpacing.stackMd),
+              ],
           ],
-        ),
-        const SizedBox(height: AppSpacing.stackSm),
-        if (memories.isEmpty)
-          const EmptyState('No memories recorded on this day yet.')
-        else
-          for (final memory in memories) ...[
-            MemoryCard(memory: memory, onTap: () => onOpenMemory(memory)),
-            const SizedBox(height: AppSpacing.stackMd),
-          ],
-      ],
+        );
+      },
     );
   }
 }

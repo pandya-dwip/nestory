@@ -84,37 +84,33 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       title: _formatDayTitle(date),
       subtitle: subtitle,
-      builder: (context) => DayAgendaSheet(
+      builder: (sheetContext) => DayAgendaSheet(
         date: date,
         memories: memories,
         events: events,
-        onAddMemory: () {
-          Navigator.of(context).pop();
-          Navigator.of(context).push(
+        onAddMemory: () async {
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => CreateEditMemoryScreen(initialDate: date),
             ),
           );
         },
-        onOpenMemory: (memory) {
-          Navigator.of(context).pop();
-          Navigator.of(context).push(
+        onOpenMemory: (memory) async {
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => MemoryDetailsScreen(memory: memory),
             ),
           );
         },
-        onAddEvent: () {
-          Navigator.of(context).pop();
-          Navigator.of(context).push(
+        onAddEvent: () async {
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => CreateEditEventScreen(initialDate: date),
             ),
           );
         },
-        onOpenEvent: (event) {
-          Navigator.of(context).pop();
-          Navigator.of(context).push(
+        onOpenEvent: (event) async {
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => CreateEditEventScreen(event: event),
             ),

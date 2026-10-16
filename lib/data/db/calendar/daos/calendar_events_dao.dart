@@ -62,7 +62,8 @@ class CalendarEventsDao extends DatabaseAccessor<CalendarDatabase>
       ..where((e) {
         final notDeleted = e.syncStatus.isNotValue('pendingDelete');
         final calendarFilter = (calendarIds != null && calendarIds.isNotEmpty)
-            ? e.googleCalendarId.isIn(calendarIds)
+            ? (e.googleCalendarId.isIn(calendarIds) |
+                e.googleCalendarId.equals('primary'))
             : const Constant(true);
 
         final isAllDayMatch =

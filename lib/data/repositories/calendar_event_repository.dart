@@ -44,12 +44,22 @@ class CalendarEventRepository extends ChangeNotifier {
         .map((c) => c.googleCalendarId)
         .toSet();
 
+    final primaryCal = calendars.cast<CalendarMetaEntity?>().firstWhere(
+      (c) => c?.isPrimary == true,
+      orElse: () => null,
+    );
+    final isPrimarySelected = primaryCal?.isSelected ?? true;
+
     final rows = await _db.calendarEventsDao.getAllEvents();
 
     _events = [
       for (final row in rows)
         if (selectedCalendarIds.isEmpty ||
-            selectedCalendarIds.contains(row.googleCalendarId))
+            selectedCalendarIds.contains(row.googleCalendarId) ||
+            (row.googleCalendarId == 'primary' && isPrimarySelected) ||
+            (primaryCal != null &&
+                row.googleCalendarId == primaryCal.googleCalendarId &&
+                isPrimarySelected))
           CalendarEvent(
             id: row.id,
             googleEventId: row.googleEventId,
@@ -65,8 +75,14 @@ class CalendarEventRepository extends ChangeNotifier {
             timeZone: row.timeZone,
             syncStatus: row.syncStatus,
             remoteETag: row.remoteETag,
-            calendarSummary: _calendarsById[row.googleCalendarId]?.summary,
-            calendarColorHex: _calendarsById[row.googleCalendarId]?.colorHex,
+            calendarSummary: _calendarsById[row.googleCalendarId]?.summary ??
+                (row.googleCalendarId == 'primary'
+                    ? (primaryCal?.summary ?? 'Primary')
+                    : null),
+            calendarColorHex: _calendarsById[row.googleCalendarId]?.colorHex ??
+                (row.googleCalendarId == 'primary'
+                    ? primaryCal?.colorHex
+                    : null),
           ),
     ];
 
@@ -168,7 +184,22 @@ class CalendarEventRepository extends ChangeNotifier {
     // Trigger asynchronous outbox drain in background without blocking UI
     CalendarSyncService.instance.triggerOutboxDrain();
 
-    return byId(id)!;
+    return byId(id) ??
+        CalendarEvent(
+          id: id,
+          googleEventId: clientEventId,
+          googleCalendarId: googleCalendarId,
+          title: title,
+          description: description,
+          location: location,
+          isAllDay: isAllDay,
+          startDate: startDate,
+          endDate: endDate,
+          startDateTime: startDateTime,
+          endDateTime: endDateTime,
+          timeZone: timeZone,
+          syncStatus: 'pendingCreate',
+        );
   }
 
   /// Updates an existing calendar event locally and enqueues the mutation.
