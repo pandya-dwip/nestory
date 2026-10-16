@@ -51,12 +51,14 @@ class MonthCalendarPage extends StatelessWidget {
       color: monthStyle.color?.withValues(alpha: 0.55),
     );
 
+    const horizontalPadding = 12.0;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.gutter,
-        100,
-        AppSpacing.gutter,
-        AppSpacing.stackLg,
+        horizontalPadding,
+        92,
+        horizontalPadding,
+        AppSpacing.stackMd,
       ),
       child: Column(
         children: [
@@ -117,27 +119,20 @@ class MonthCalendarPage extends StatelessWidget {
               builder: (context, constraints) {
                 final totalCells = leading + daysInMonth;
                 final rows = (totalCells / 7).ceil();
-                const columnSpacing = AppSpacing
-                    .unit; // tight column gap so circles use full width
+                const columnSpacing = 5.0; // tight gap to maximize square cell sizes
 
-                // Circle size is bound by the 7-column width — that's always
-                // the tighter constraint than row height. Row spacing then
-                // expands to consume whatever vertical room is left, so the
-                // grid always fills the available height edge-to-edge with
-                // no dead space below the last row, for every month (4-6
-                // rows), instead of leaving leftover height unused.
                 final cellSize = math.min(
                   (constraints.maxWidth - columnSpacing * 6) / 7,
                   constraints.maxHeight / rows,
                 );
-                // Fill most (not all) of the leftover height as row gaps —
-                // a little breathing room, but not the full amount, so a
-                // small margin is left below the last row instead of none.
-                const rowFillFactor = 0.75;
+                const rowFillFactor = 0.70;
                 final rowSpacing = rows > 1
-                    ? (constraints.maxHeight - rows * cellSize) /
-                          (rows - 1) *
-                          rowFillFactor
+                    ? math.max(
+                        columnSpacing,
+                        (constraints.maxHeight - rows * cellSize) /
+                            (rows - 1) *
+                            rowFillFactor,
+                      )
                     : 0.0;
                 final gridHeight = rows * cellSize + (rows - 1) * rowSpacing;
 
