@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../data/repositories/calendar_event_repository.dart';
 import '../../data/repositories/memory_repository.dart';
+import '../../data/services/widget_snapshot_service.dart';
 import '../../shared/widgets/glass_bottom_sheet.dart';
 import '../../shared/widgets/glass_icon_button.dart';
 import '../calendar/create_edit_event_screen.dart';
@@ -47,7 +48,46 @@ class _HomeScreenState extends State<HomeScreen> {
       DateTime(_minYear + index ~/ 12, index % 12 + 1, 1);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetSnapshotService.instance.onActionReceived = _handleWidgetAction;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pending = WidgetSnapshotService.instance.consumePendingAction();
+      if (pending != null) {
+        final action = pending['action'] as String?;
+        final date = pending['date'] as DateTime?;
+        if (action != null) _handleWidgetAction(action, date);
+      }
+    });
+  }
+
+  void _handleWidgetAction(String action, DateTime? date) {
+    if (!mounted) return;
+    if (action == 'create_memory') {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => CreateEditMemoryScreen(initialDate: date),
+        ),
+      );
+    } else if (action == 'create_event') {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => CreateEditEventScreen(initialDate: date),
+        ),
+      );
+    } else if (action == 'view_day') {
+      final targetDate = date ?? DateTime.now();
+      final pageIndex = _indexFor(targetDate.year, targetDate.month);
+      if (_monthController.hasClients) {
+        _monthController.jumpToPage(pageIndex);
+      }
+      _openDay(targetDate);
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetSnapshotService.instance.onActionReceived = null;
     _monthController.dispose();
     super.dispose();
   }

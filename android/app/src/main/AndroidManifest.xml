@@ -28,6 +28,24 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Native Android Home-Screen Widget Provider -->
+        <receiver
+            android:name=".widget.NestoryWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.nestory.app.widget.ACTION_SELECT_DATE" />
+                <action android:name="com.nestory.app.widget.ACTION_PREV_MONTH" />
+                <action android:name="com.nestory.app.widget.ACTION_NEXT_MONTH" />
+                <action android:name="com.nestory.app.widget.ACTION_RESET_TODAY" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/nestory_widget_info" />
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

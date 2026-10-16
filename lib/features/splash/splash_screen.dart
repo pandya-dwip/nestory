@@ -7,6 +7,7 @@ import '../../data/repositories/memory_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../data/services/calendar_sync_service.dart';
 import '../../data/services/google_auth_service.dart';
+import '../../data/services/widget_snapshot_service.dart';
 import '../home/home_screen.dart';
 
 /// First screen shown on launch. Plays a short brand entrance while the
@@ -67,6 +68,7 @@ class _SplashScreenState extends State<SplashScreen>
     ]);
     CalendarSyncService.instance.init();
     CalendarSyncService.instance.triggerOutboxDrain();
+    await WidgetSnapshotService.instance.init();
     // Keep the entrance on screen for a minimum stretch so it always reads
     // as an intentional brand moment, never a flicker on fast devices.
     const minimumDisplay = Duration(milliseconds: 1700);

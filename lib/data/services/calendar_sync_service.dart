@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:googleapis/calendar/v3.dart' as cal;
 
 import '../db/calendar/calendar_database.dart';
+import '../repositories/calendar_event_repository.dart';
 import 'google_auth_service.dart';
 import 'google_calendar_client.dart';
 
@@ -116,6 +117,7 @@ class CalendarSyncService extends ChangeNotifier {
         accountEmail,
         _lastSyncTime!,
       );
+      await CalendarEventRepository.instance.reload();
     } catch (e) {
       debugPrint('[CalendarSyncService] Synchronization error: $e');
       _syncError = e.toString();

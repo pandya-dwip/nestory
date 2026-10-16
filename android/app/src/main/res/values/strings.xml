@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nestory</string>
+    <string name="widget_name">Nestory</string>
+    <string name="widget_description">Interactive monthly calendar, scheduled events, and memory highlights at a glance.</string>
+    <string name="no_events">No upcoming events</string>
+    <string name="enjoy_day">Enjoy your day!</string>
+    <string name="add_event">Add event</string>
+    <string name="add_memory">Add memory</string>
+    <string name="prev_month">Previous month</string>
+    <string name="next_month">Next month</string>
+    <string name="today_memory">Memory from today</string>
+</resources>

@@ -4,6 +4,8 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'features/splash/splash_screen.dart';
 
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const NestoryApp());
@@ -17,6 +19,7 @@ class NestoryApp extends StatelessWidget {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeModeNotifier,
       builder: (context, mode, _) => MaterialApp(
+        navigatorKey: appNavigatorKey,
         title: 'Nestory',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
